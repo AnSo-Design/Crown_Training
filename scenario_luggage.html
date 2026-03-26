@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nordic Crown — Emergency Training</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f4f2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 3rem;
+  }
+
+  .top-bar {
+    width: 100%;
+    background: #c0392b;
+    padding: 1rem 1.25rem 0.85rem;
+    color: white;
+  }
+
+  .top-bar .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 2px;
+  }
+
+  .top-bar .title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .top-bar .location {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+
+  .progress-wrap {
+    background: rgba(255,255,255,0.3);
+    border-radius: 99px;
+    height: 3px;
+    margin-top: 12px;
+  }
+
+  .progress-fill {
+    height: 3px;
+    border-radius: 99px;
+    background: white;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 480px;
+    padding: 1.25rem;
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 0.03em;
+  }
+
+  .scene-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1rem 1.125rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e8e6e0;
+  }
+
+  .scene-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .scene-text {
+    font-size: 15px;
+    color: #222;
+    line-height: 1.65;
+  }
+
+  .question-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .choice-btn {
+    width: 100%;
+    text-align: left;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    color: #222;
+    cursor: pointer;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .choice-btn:active { background: #f4f4f2; }
+
+  .choice-btn.correct {
+    border-color: #2e9e5b;
+    background: #f0faf4;
+  }
+
+  .choice-btn.wrong {
+    border-color: #c0392b;
+    background: #fdf2f1;
+  }
+
+  .choice-btn:disabled { cursor: default; }
+
+  .choice-letter {
+    font-size: 11px;
+    font-weight: 600;
+    color: #bbb;
+    min-width: 16px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .choice-btn.correct .choice-letter { color: #2e9e5b; }
+  .choice-btn.wrong .choice-letter { color: #c0392b; }
+
+  .feedback-card {
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+    border: 1px solid;
+  }
+
+  .feedback-card.correct {
+    background: #f0faf4;
+    border-color: #a8dfc0;
+  }
+
+  .feedback-card.wrong {
+    background: #fdf2f1;
+    border-color: #f5c0ba;
+  }
+
+  .feedback-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .feedback-card.correct .feedback-title { color: #1e7a42; }
+  .feedback-card.wrong .feedback-title { color: #a0291e; }
+
+  .feedback-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .next-btn {
+    width: 100%;
+    padding: 0.875rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .next-btn:active { background: #a0291e; }
+
+  .note-card {
+    background: #fffbf0;
+    border: 1px solid #f0d080;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: #7a5c00;
+    line-height: 1.55;
+  }
+
+  .note-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b07800;
+    margin-bottom: 4px;
+  }
+
+  .intro-wrap { text-align: center; padding-top: 0.5rem; }
+
+  .intro-badge {
+    display: inline-block;
+    background: #fdf2f1;
+    color: #a0291e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 99px;
+    margin-bottom: 1rem;
+    border: 1px solid #f5c0ba;
+  }
+
+  .intro-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .meta-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  .meta-label {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .start-btn:active { background: #a0291e; }
+
+  .summary-wrap { text-align: center; padding-top: 0.5rem; }
+
+  .summary-score {
+    font-size: 52px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1;
+    margin: 0.5rem 0 0.25rem;
+  }
+
+  .summary-sub {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 1.5rem;
+  }
+
+  .review-list {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e8e6e0;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .review-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0eeea;
+  }
+
+  .review-item:last-child { border-bottom: none; }
+
+  .review-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .review-dot.correct { background: #2e9e5b; }
+  .review-dot.wrong { background: #c0392b; }
+
+  .review-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e8e6e0;
+    margin: 1.25rem 0;
+  }
+
+  .restart-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .restart-btn:active { background: #eee; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="label">Nordic Crown — Emergency Training</div>
+  <div class="title" id="bar-title">Cabin Sweep: Passenger Won't Leave</div>
+  <div class="location">Deck 6 · Forward Hall · Cabin 6521</div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+</div>
+
+<div class="container" id="content"></div>
+
+<script>
+const steps = [
+  {
+    scene: "It is early in the evacuation. You are sweeping the forward hall on Deck 6. You knock on cabin 6521 and open the door. A woman in her 50s is pulling clothes out of the wardrobe and stuffing them into a large suitcase. The alarm is sounding. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
+    question: "What is your first response?",
+    choices: [
+      {
+        text: "Tell her firmly that she must leave immediately and that she cannot bring anything",
+        correct: false,
+        feedback: "Starting with a flat refusal and a command is likely to make her dig in further. She is stressed and scared — a confrontational approach may cost you more time than a calm one. Lead with the key information, not a demand."
+      },
+      {
+        text: "Wait by the door and give her two minutes — it is early in the evacuation and there is no immediate rush",
+        correct: false,
+        feedback: "Even though it is early in the evacuation, waiting is not the right move. Every cabin takes time and you have a full deck to sweep. You also cannot know how quickly the situation on the ship may change. Keep things moving."
+      },
+      {
+        text: "Step into the cabin, speak calmly, and tell her she needs to come now — she can bring warm clothes and good shoes, but not a suitcase",
+        correct: true,
+        feedback: "Good. You are giving her clear, specific information rather than a flat refusal. She now knows what she can bring, which gives her something to work with. Staying calm also helps — she is likely frightened, and your tone sets the mood in the cabin."
+      },
+      {
+        text: "Take the suitcase from her hands and move it out of reach so she has no choice but to leave",
+        correct: false,
+        feedback: "Removing someone's belongings without consent is likely to cause a confrontation. It could also slow you down significantly if she refuses to cooperate. Use words first — physical intervention is a last resort."
+      }
+    ]
+  },
+  {
+    scene: "The passenger has stopped packing. But she has now zipped up a large suitcase and is pulling it toward the door. She says: 'I'm ready. Let's go.' She expects to bring the suitcase with her.",
+    question: "What do you do?",
+    choices: [
+      {
+        text: "Let her bring the suitcase — she is ready to move and that is what matters",
+        correct: false,
+        feedback: "A large suitcase in a narrow corridor or stairwell during an evacuation is a genuine hazard. It slows movement, can block others, and creates trip risks. You already told her she could not bring a suitcase — allowing it now undermines that and sets a precedent for other passengers who are watching."
+      },
+      {
+        text: "Block the door and tell her the suitcase stays — explain it is a safety hazard in the corridors and on the stairs",
+        correct: true,
+        feedback: "Correct. You are being firm but giving her a reason, not just a rule. A suitcase in a narrow stairwell or crowded corridor is a real hazard — saying this helps her understand it is not arbitrary. Offer her the alternative: she can grab a small bag with essentials and leave immediately."
+      },
+      {
+        text: "Tell her you will carry the suitcase for her so it is not a problem",
+        correct: false,
+        feedback: "You cannot carry a passenger's suitcase and continue your sweep at the same time. It also sets a precedent and delays you significantly. The suitcase needs to stay in the cabin."
+      },
+      {
+        text: "Ignore the suitcase and focus on getting her out of the cabin — the zone leader can deal with it later",
+        correct: false,
+        feedback: "Once she is in the corridor with the suitcase it becomes much harder to take it from her. Address it now, before she leaves the cabin, when it is easiest to manage."
+      }
+    ]
+  },
+  {
+    scene: "She is frustrated but has agreed to leave the suitcase. She is already holding her handbag and looks at you. 'I have my passport and phone in here — can I at least take this?'",
+    question: "What do you do?",
+    choices: [
+      {
+        text: "Tell her she cannot bring anything at all and she must leave right now",
+        correct: false,
+        feedback: "This is too rigid. The guidance is that passengers should only bring warm clothes and suitable shoes — but a small bag with a passport and phone is reasonable and not a safety hazard. Refusing everything risks another confrontation and more delay. Pick your battles."
+      },
+      {
+        text: "Tell her the small bag is fine and move her out of the cabin immediately",
+        correct: true,
+        feedback: "Correct. A small shoulder bag with a passport and phone is not a hazard and the confrontation over the suitcase has already cost time. Let her take it, get her moving, and continue your sweep. The zone leader can handle any further issues at the muster station."
+      },
+      {
+        text: "Tell her she can take the bag but she needs to leave the passport — documents will be handled by the ship",
+        correct: false,
+        feedback: "There is no reason to separate a passenger from their passport in this situation. It would cause unnecessary distress and further delay. Let her take the small bag and move on."
+      },
+      {
+        text: "Ask her to wait while you check with the zone leader whether the bag is allowed",
+        correct: false,
+        feedback: "You do not have a radio and leaving her to find the zone leader is not an option. You have enough information to make this call yourself — a small bag is fine. Use your judgement and keep things moving."
+      }
+    ]
+  }
+];
+
+let current = -1;
+let selected = null;
+let results = [];
+
+function setProgress(pct) {
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+function render() {
+  const content = document.getElementById('content');
+  if (current === -1) { renderIntro(content); return; }
+  if (current >= steps.length) { renderSummary(content); return; }
+
+  setProgress((current / steps.length) * 100);
+  const step = steps[current];
+  const answered = selected !== null;
+  const letters = ['A','B','C','D'];
+
+  const choicesHTML = step.choices.map((c, i) => {
+    let cls = 'choice-btn';
+    if (answered && i === selected) cls += c.correct ? ' correct' : ' wrong';
+    return `<button class="${cls}" onclick="choose(${i})" ${answered ? 'disabled' : ''}>
+      <span class="choice-letter">${letters[i]}</span>
+      <span>${c.text}</span>
+    </button>`;
+  }).join('');
+
+  let feedbackHTML = '';
+  if (answered) {
+    const c = step.choices[selected];
+    const isLast = current === steps.length - 1;
+    const noteHTML = !c.correct ? `
+      <div class="note-card">
+        <div class="note-label">Remember</div>
+        The correct response was: <strong>${step.choices.find(x => x.correct).text}</strong>
+      </div>` : '';
+    feedbackHTML = `
+      <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
+        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-text">${c.feedback}</div>
+      </div>
+      ${noteHTML}
+      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+  }
+
+  content.innerHTML = `
+    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="scene-card">
+      <div class="scene-label">Situation</div>
+      <div class="scene-text">${step.scene}</div>
+    </div>
+    <div class="question-label">${step.question}</div>
+    <div class="choices">${choicesHTML}</div>
+    <div>${feedbackHTML}</div>`;
+}
+
+function renderIntro(content) {
+  setProgress(0);
+  document.getElementById('bar-title').textContent = 'Cabin Sweep: Passenger Won\'t Leave';
+  content.innerHTML = `
+    <div class="intro-wrap">
+      <div class="intro-badge">Emergency Training Scenario</div>
+      <div class="intro-title">A passenger refuses to leave without her belongings</div>
+      <div class="intro-desc">It is early in the evacuation. You are sweeping Deck 6 forward hall. You open cabin 6521 and find a passenger packing a suitcase. She does not want to leave without her things.</div>
+      <div class="intro-meta">
+        <div class="meta-item">
+          <div class="meta-value">3</div>
+          <div class="meta-label">Situations</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value">~2 min</div>
+          <div class="meta-label">Duration</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value">Deck 6</div>
+          <div class="meta-label">Location</div>
+        </div>
+      </div>
+      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+    </div>`;
+}
+
+function renderSummary(content) {
+  setProgress(100);
+  document.getElementById('bar-title').textContent = 'Results';
+  const score = results.filter(r => r.correct).length;
+  const total = results.length;
+  let msg = '';
+  if (score === total) msg = 'All correct — excellent work.';
+  else if (score >= 2) msg = 'Good. Review the situations you missed before the next drill.';
+  else msg = 'Go through this scenario with your zone leader at the debrief.';
+
+  const reviewItems = results.map((r, i) => `
+    <div class="review-item">
+      <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
+      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+    </div>`).join('');
+
+  content.innerHTML = `
+    <div class="summary-wrap">
+      <div class="step-label">Scenario complete</div>
+      <div class="summary-score">${score}/${total}</div>
+      <div class="summary-sub">${msg}</div>
+    </div>
+    <div class="review-list">${reviewItems}</div>
+    <div class="divider"></div>
+    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+}
+
+function startScenario() {
+  current = 0; selected = null; results = [];
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function choose(i) {
+  if (selected !== null) return;
+  selected = i;
+  results.push({ correct: steps[current].choices[i].correct });
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function next() {
+  current++; selected = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  current = -1; selected = null; results = [];
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
