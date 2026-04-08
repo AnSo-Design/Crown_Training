@@ -383,54 +383,54 @@
 <script>
 const steps = [
   {
-    scene: "It is 9 o'clock at night. You are sweeping the forward hall on Deck 6. The alarm has been sounding for two minutes. You knock on cabin 6521, open the door, and find a child — around 8 years old — sitting on the bed in pyjamas, crying. The cabin is otherwise empty. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
+    scene: "You are sweeping the forward hall on Deck 6. You open a cabin door, and find a child alone — around 8 years old — sitting on the bed, crying. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
     question: "What is your first response?",
     choices: [
       {
         text: "Tell the child firmly that they must come with you immediately — this is an emergency",
         correct: false,
-        feedback: "Issuing a firm command to a frightened child almost always makes the situation worse. A child who is already refusing to move will dig in further if they feel threatened or ordered around. Your first goal is to build just enough trust to get them moving."
+        feedback: "Issuing a firm command to a frightened child almost always makes the situation worse. Your first goal is to build enough trust to get them moving."
       },
       {
         text: "Step into the cabin, crouch down to the child's level, speak calmly: 'I'm here to help you. What's your name?'",
         correct: true,
-        feedback: "Good first move. Getting down to the child's physical level and asking their name shifts the dynamic — the child feels seen as a person, not just an obstacle. A calm voice also signals that you are in control of the situation, which helps reduce their fear."
+        feedback: "Good first move. Getting down to the child's physical level and asking their name makes them feel safe. A calm voice also signals that you are in control of the situation, which helps reduce their fear."
       },
       {
         text: "Leave the cabin and find the zone leader immediately to report an unaccompanied child",
         correct: false,
-        feedback: "You should not leave an unaccompanied child alone in a cabin during an evacuation alarm. You are the responsible adult in this moment. Report to the zone leader, but do not leave the child to do it — find another way."
+        feedback: "You should not leave an unaccompanied child alone in a cabin during an evacuation alarm. You are the responsible adult in this moment."
       },
       {
         text: "Pick the child up and carry them out of the cabin toward the muster station",
         correct: false,
-        feedback: "Physical removal without consent is a last resort — and with a child, it can trigger panic, screaming, and resistance that slows you down further. It also raises safeguarding concerns. Try verbal de-escalation first."
+        feedback: "Physical removal without consent is a last resort — and with a child, it can trigger panic, screaming, and resistance that slows you down further. Try verbal de-escalation first."
       }
     ]
   },
   {
-    scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep. He is scared and tearful but has stopped crying. He is still sitting on the bed and says he won't move until they come back.",
+    scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep.  He says he won't move until they come back.",
     question: "How do you get Lucas moving?",
     choices: [
       {
         text: "Tell Lucas this is just a drill and there is no real danger, so he can come with you without worrying",
         correct: false,
-        feedback: "Even if this is a drill, you should never tell passengers it is not a real emergency — this is against safety protocol on all passenger ships. Passengers must always respond as if the alarm is real. You also do not know for certain whether this is a drill or not at this point in the scenario."
+        feedback: "Even if this is a drill, you should never tell passengers it is not a real emergency. Passengers must always respond as if the alarm is real."
       },
       {
         text: "Sit with Lucas and wait — his parents will return to the cabin when they realise he is missing",
         correct: false,
-        feedback: "Waiting in the cabin is not an option during an active evacuation alarm. Your job is to clear the deck and get everyone to a safe location. The parents will be directed to the muster station — that is where Lucas should be."
+        feedback: "Waiting in the cabin is not an option during an active evacuation alarm. Your job is to clear the deck and get everyone to a safe location."
       },
       {
         text: "Tell Lucas his parents are probably already at the muster station waiting for him — that's where families meet during an alarm",
         correct: true,
-        feedback: "This is a practical and honest response. Muster stations are exactly where separated family members are reunited — this is true, and telling Lucas this gives him a reason to move that is meaningful to him. You are not lying to him, you are giving him hope and direction."
+        feedback: "This is a practical and honest response. Muster stations are exactly where separated family members are reunited."
       },
       {
         text: "Promise Lucas you will personally find his parents and bring them to him if he comes with you now",
         correct: false,
-        feedback: "Making promises you cannot keep is a risk. You do not have a radio, you cannot leave Lucas, and you cannot guarantee you will find his parents. If you make this promise and cannot keep it, Lucas's trust collapses and the situation becomes harder to manage."
+        feedback: "Making promises you cannot keep is a risk. You do not have a radio, you cannot leave Lucas, and you cannot guarantee you will find his parents."
       }
     ]
   },
@@ -439,11 +439,6 @@ const steps = [
     question: "What do you do next?",
     choices: [
       {
-        text: "Stay with Lucas in the cabin and wait — his parents will come back when they hear the alarm",
-        correct: false,
-        feedback: "Waiting in the cabin takes you out of your sweep entirely and leaves Lucas in an unsupervised situation for an unknown amount of time. The zone leader needs to know about Lucas as soon as possible so they can coordinate finding his parents."
-      },
-      {
         text: "Finish your full cabin sweep first, then take Lucas to the zone leader at the end",
         correct: false,
         feedback: "Completing the sweep before handing Lucas over delays critical information reaching the zone leader. His parents may be at the muster station already, worried and unaccounted for. The handover takes only a few minutes — do it first, then return to your sweep."
@@ -451,12 +446,12 @@ const steps = [
       {
         text: "Leave Lucas in the corridor and continue your sweep — he is old enough to find the muster station himself",
         correct: false,
-        feedback: "An 8-year-old alone in a corridor during an active evacuation alarm is not safe. He does not know the ship, he is already frightened, and leaving him unaccompanied could make the situation significantly worse. You are responsible for him until you hand him to the zone leader."
+        feedback: "An 8-year-old alone in a corridor during an active evacuation alarm is not safe. He does not know the ship, he is already frightened, and leaving him unaccompanied could make the situation significantly worse."
       },
       {
         text: "Take Lucas directly to the zone leader at the muster station, hand him over, explain the situation, then return to continue your cabin sweep",
         correct: true,
-        feedback: "Correct. The zone leader has the radio, the authority, and the overview to handle an unaccompanied child and locate his parents. The muster station is close, the handover is quick, and you can return to your sweep immediately. This keeps both Lucas safe and your sweep on track."
+        feedback: "Correct. The zone leader has the radio, the authority, and the overview to handle an unaccompanied child and locate his parents. The muster station is close, the handover is quick, and you can return to your sweep immediately."
       }
     ]
   }
