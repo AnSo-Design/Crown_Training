@@ -422,27 +422,6 @@ const steps = [
         feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself."
       }
     ]
-  },
-  {
-    scene: "The passenger with the large dog has joined the assembly. She now asks you quietly: \"If the ship had been full — would he really not have been allowed?\"",
-    question: "What do you say?",
-    choices: [
-      {
-        text: "Tell her the dog will always be allowed — passenger wellbeing comes first",
-        correct: false,
-        feedback: "This isn't accurate. If the ship were at full capacity, human life would take precedence and the dog could not board. Giving false reassurance doesn't help — and it could lead to a more difficult confrontation in a future situation."
-      },
-      {
-        text: "Be honest: \"Yes — if the ship were full, passenger safety would have to come first. But today there is room, so he is welcome.\"",
-        correct: true,
-        feedback: "Good. This is honest, clear and kind. It explains the principle without being cold about it. The passenger deserves to understand how these decisions are made — and this answer respects that."
-      },
-      {
-        text: "Tell her it is complicated and you are not sure of the exact rules",
-        correct: false,
-        feedback: "You do know the principle — capacity determines the decision. Saying you are unsure when you aren't gives the passenger less confidence in the crew. Be clear and honest, even when the answer is difficult."
-      }
-    ]
   }
 ];
 
@@ -505,8 +484,8 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A passenger wants to bring her dog onto the life raft</div>
-      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with a dog and refuses to board without it. Whether the dog can board depends on the situation.</div>
+      <div class="intro-title">A passenger wants to bring her dog with her during evacuation</div>
+      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with a dog and refuses to evaduate without it. Whether the dog can come depends on the situation.</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
