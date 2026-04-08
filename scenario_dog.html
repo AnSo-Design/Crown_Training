@@ -382,68 +382,46 @@
 <script>
 const steps = [
   {
-    scene: "Life raft boarding has begun. A woman approaches holding a small dog. She stops at the raft entrance and says: \"She comes with me. I'm not getting in without her.\" Other passengers are queuing behind her.",
+    scene: "You are evacuating cabins and a woman approaches holding a small dog. She insists on keeping the dog with her throughout the evacuation. The ship is at half capacity.",
     question: "What do you do?",
     choices: [
       {
-        text: "Tell her calmly that small dogs can usually board — help her in and continue boarding",
+        text: "Tell her calmly that she can take the dog with her, and continue your evacuation duties.",
         correct: true,
-        feedback: "Good. On a typical voyage the ship is not at full capacity, and a small dog takes up minimal space. Allowing it keeps things moving and avoids an unnecessary confrontation. Your priority is getting everyone safely boarded."
+        feedback: "Good. A small dog takes up minimal space. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. Your priority is getting everyone evacuated safely."
       },
       {
         text: "Tell her animals are never allowed on life rafts and ask her to leave the dog behind",
         correct: false,
-        feedback: "Not quite. The rule isn't absolute — a small dog can usually board if there is space. A flat refusal risks a prolonged confrontation that delays the whole queue. Assess the situation first."
+        feedback: "Not quite. A dog can usually board if there is space. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first."
       },
       {
-        text: "Ignore her request and guide the passengers behind her onto the raft first",
+        text: "Ignore her request and continue helping others.",
         correct: false,
-        feedback: "Not quite. Skipping over her leaves a distressed, non-compliant passenger blocking the entrance. You need to engage and resolve it — not work around it."
+        feedback: "Not quite. Skipping over her leaves a distressed, non-compliant passenger who may become an issue. You need to engage and resolve it — not work around it."
       }
     ]
   },
   {
-    scene: "A short while later, another passenger arrives at the raft with a large dog — a German Shepherd. The raft is already more than half full.",
+    scene: "A short while later, another passenger arrives with a large dog — a German Shepherd.",
     question: "What do you do?",
     choices: [
       {
-        text: "Allow the dog — you allowed a small dog earlier, so the same rule applies",
-        correct: false,
-        feedback: "Not quite. A large dog is a different situation — it takes up significant space in a raft that is already half full. The earlier decision was based on space being available and the dog being small. Each situation needs its own assessment."
+        text: "Allow them to board with the dog.",
+        correct: true,
+        feedback: "Correct. The ship is not at full capacity and there is space for the dog. Where capacity allows, there is no reason to separate a passenger from their animal. Always base your decision on what you can see in front of you."
       },
       {
-        text: "Assess how much space remains. If there is room, allow the dog. If the raft is close to capacity, explain that the dog cannot board and focus on getting the passenger in.",
-        correct: true,
-        feedback: "Correct. This is the right approach — capacity is the deciding factor. If there is space, a large dog can board. If the raft is close to full, passenger safety comes first. Be honest with the passenger about why."
+        text: "Do not allow her to board with the dog. This dog is much bigger and takes up too much space.",
+        correct: false,
+        feedback: "Not quite. If the ship is at full capacity, this might be necessary. However, it is only at half capacity, so there is room for the dog, which will make the passenger more compliant."
       },
       {
         text: "Call your zone leader and wait for a decision before doing anything",
         correct: false,
-        feedback: "Not quite. Your zone leader is managing the whole muster station. A capacity assessment is something you can make yourself by looking at the raft. Use your judgement and keep boarding moving."
+        feedback: "Not quite. Your zone leader is managing the whole muster station. This is a situation you can judge for yourself."
       }
     ]
-  },
-  {
-    scene: "You have told the passenger that the large dog cannot board — the raft is nearly full. She becomes upset and says: \"What will happen to him?\"",
-    question: "What do you say?",
-    choices: [
-      {
-        text: "Tell her the dog will be looked after by crew remaining on board",
-        correct: false,
-        feedback: "Not quite. Don't promise something you can't guarantee. If it turns out not to be true, you've broken her trust at a very difficult moment. Be honest about what you know."
-      },
-      {
-        text: "Say nothing and guide her onto the raft — there is no time",
-        correct: false,
-        feedback: "Not quite. She has agreed to board — a significant step. Ignoring her question is unnecessarily cold and may cause her to hesitate again. A brief, honest response costs very little time."
-      },
-      {
-        text: "Be honest: \"I don't know — but right now I need to get you safe. Please board now.\" Then report the dog's location to your zone leader.",
-        correct: true,
-        feedback: "Good. \"I don't know\" is the right answer when you don't know. It acknowledges the difficulty without false reassurance. Reporting the dog's location to your zone leader ensures the information is passed on to anyone remaining on board."
-      }
-    ]
-  }
 ];
 
 let current = -1;
