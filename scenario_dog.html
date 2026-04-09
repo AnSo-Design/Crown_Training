@@ -398,7 +398,7 @@ const steps = [
       {
         text: "Ignore her request and continue helping others.",
         correct: false,
-        feedback: "Skipping over her leaves a distressed, non-compliant passenger who may become an issue. You need to engage and resolve it — not work around it."
+        feedback: "Skipping over her leaves a distressed, non-compliant passenger who may become an issue. You need to engage and resolve it."
       }
     ]
   },
@@ -409,7 +409,7 @@ const steps = [
       {
         text: "Allow them to board with the dog.",
         correct: true,
-        feedback: "Correct. The ship is not at full capacity and there is space for the dog. Where capacity allows, there is no reason to separate a passenger from their animal. Always base your decision on what you can see in front of you."
+        feedback: "Correct. The ship is not at full capacity and there is space for the dog. Where capacity allows, there is no reason to separate a passenger from their animal. Always base your decision on the situation in front of you."
       },
       {
         text: "Do not allow her to board with the dog. This dog is much bigger and takes up too much space.",
@@ -417,7 +417,7 @@ const steps = [
         feedback: "If the ship is at full capacity, this might be necessary. However, it is only at half capacity, so there is room for the dog, which will make the passenger more compliant."
       },
       {
-        text: "Call your zone leader and wait for a decision before doing anything",
+        text: "Call your zone leader and wait for their decision before doing anything",
         correct: false,
         feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself."
       }
@@ -484,8 +484,8 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A passenger wants to bring her dog with her during evacuation</div>
-      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with a dog and refuses to evaduate without it. Whether the dog can come depends on the situation.</div>
+      <div class="intro-title">A passenger wants to bring a dog with her during evacuation</div>
+      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with a dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
