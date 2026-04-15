@@ -372,7 +372,6 @@
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
   <div class="title" id="bar-title">Cabin Sweep: Child Alone</div>
-  <div class="location" id="bar-location">Deck 6 · Forward Hall · Cabin 6521</div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -383,7 +382,7 @@
 <script>
 const steps = [
   {
-    scene: "You are sweeping the forward hall on Deck 6. You open a cabin door, and find a child alone — around 8 years old — sitting on the bed, crying. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
+    scene: "You are evacuating your assigned area. You open a cabin door, and find a child alone — around 8 years old — sitting on the bed, crying. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
     question: "What is your first response?",
     choices: [
       {
@@ -404,7 +403,7 @@ const steps = [
     ]
   },
   {
-    scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep.  He says he won't move until they come back.",
+    scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep. He says he won't move until they come back.",
     question: "How do you get Lucas moving?",
     choices: [
       {
@@ -517,10 +516,6 @@ function renderIntro(content) {
         <div class="meta-item">
           <div class="meta-value">~2 min</div>
           <div class="meta-label">Duration</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-value">Deck 6</div>
-          <div class="meta-label">Location</div>
         </div>
       </div>
       <button class="start-btn" onclick="startScenario()">Start scenario</button>
