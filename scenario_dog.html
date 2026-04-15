@@ -82,7 +82,7 @@
   }
 
   .scene-label {
-    font-size: 10px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #aaa;
@@ -371,7 +371,6 @@
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
   <div class="title" id="bar-title">Muster Station: Passenger with a dog</div>
-  <div class="location">Muster Station · Evacuation Assembly</div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -391,7 +390,7 @@ const steps = [
         feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. The ship is only at half capacity, which means there is room in the life boats."
       },
       {
-        text: "Tell her animals are never allowed during evacuation and force her to leave the dog behind",
+        text: "Tell her animals are never allowed during evacuation and demand that she leave the dog behind",
         correct: false,
         feedback: "A dog can usually board if there is space in the life boats, which can be confirmed with your zone leader. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first."
       },
@@ -407,7 +406,7 @@ const steps = [
     question: "What do you do?",
     choices: [
       {
-        text: "Allow them to board with the dog.",
+        text: "Allow her to board with the dog.",
         correct: false,
         feedback: "The ship is at full capacity and there is no space for the dog. With a full ship human life is always the priority. Always base your decision on the situation in front of you."
       },
@@ -419,7 +418,7 @@ const steps = [
       {
         text: "Call your zone leader and wait for their decision before doing anything",
         correct: false,
-        feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself.CHECK WITH CAPTAIN"
+        feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself. CHECK WITH CAPTAIN"
       }
     ]
   }
@@ -480,12 +479,12 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Muster Station: Passenger with a dog';
+  document.getElementById('bar-title').textContent = 'Evacuation: Passenger with a dog';
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
       <div class="intro-title">A passenger wants to bring a dog during evacuation</div>
-      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with their dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
+      <div class="intro-desc">The evacuation is underway and you are leading passengers to your muster station. A passenger arrives with their dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
