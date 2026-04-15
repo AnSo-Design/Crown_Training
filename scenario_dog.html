@@ -382,18 +382,18 @@
 <script>
 const steps = [
   {
-    scene: "You are evacuating cabins and a woman approaches holding a small dog. She insists on keeping the dog with her throughout the evacuation. The ship is at half capacity.",
+    scene: "You are evacuating cabins and a woman approaches holding a dog. She insists on keeping the dog with her throughout the evacuation. The ship is at half capacity.",
     question: "What do you do?",
     choices: [
       {
-        text: "Tell her calmly that she can take the dog with her, and continue your evacuation duties.",
+        text: "Tell her calmly that she can bring the dog with her. Inform your zone leader so she can be moved to a life boat. CONFIRM WITH CAPTAIN",
         correct: true,
-        feedback: "Good. A small dog takes up minimal space. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. Your priority is getting everyone evacuated safely."
+        feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. The ship is only at half capacity, which means there is room in the life boats."
       },
       {
-        text: "Tell her animals are never allowed on life rafts and ask her to leave the dog behind",
+        text: "Tell her animals are never allowed during evacuation and force her to leave the dog behind",
         correct: false,
-        feedback: "A dog can usually board if there is space. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first."
+        feedback: "A dog can usually board if there is space in the life boats, which can be confirmed with your zone leader. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first."
       },
       {
         text: "Ignore her request and continue helping others.",
@@ -403,23 +403,23 @@ const steps = [
     ]
   },
   {
-    scene: "A short while later, another passenger arrives with a large dog — a German Shepherd.",
+    scene: "The situation has changed. The ship is now at full capacity.",
     question: "What do you do?",
     choices: [
       {
         text: "Allow them to board with the dog.",
-        correct: true,
-        feedback: "Correct. The ship is not at full capacity and there is space for the dog. Where capacity allows, there is no reason to separate a passenger from their animal. Always base your decision on the situation in front of you."
+        correct: false,
+        feedback: "The ship is at full capacity and there is no space for the dog. With a full ship human life is always the priority. Always base your decision on the situation in front of you."
       },
       {
-        text: "Do not allow her to board with the dog. This dog is much bigger and takes up too much space.",
-        correct: false,
-        feedback: "If the ship is at full capacity, this might be necessary. However, it is only at half capacity, so there is room for the dog, which will make the passenger more compliant."
+        text: "Do not allow her to board with the dog. You know the ship is at full capacity, and human life is your priority.",
+        correct: true,
+        feedback: "Correct. If the ship is at full capacity, there is no room for pets no matter the passenger's reaction. CHECK WITH CAPTAIN."
       },
       {
         text: "Call your zone leader and wait for their decision before doing anything",
         correct: false,
-        feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself."
+        feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself.CHECK WITH CAPTAIN"
       }
     ]
   }
@@ -484,8 +484,8 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A passenger wants to bring a dog with her during evacuation</div>
-      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with a dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
+      <div class="intro-title">A passenger wants to bring a dog during evacuation</div>
+      <div class="intro-desc">The evacuation is underway and passengers are assembling at your muster station. A passenger arrives with their dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
