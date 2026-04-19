@@ -381,23 +381,23 @@
 <script>
 const steps = [
   {
-    scene: "You are evacuating cabins during an active evacuation. You knock on a cabin and open the door. A woman is pulling clothes out of the wardrobe and stuffing them into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
+    scene: "While evacuating cabins, you knock on a door and open it. A woman is pulling clothes out of the wardrobe and stuffing them into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
     question: "What is your first response?",
     choices: [
       {
-        text: "Tell her firmly that she must leave immediately and that she cannot bring anything",
+        text: "Tell her firmly that she must leave immediately and that she cannot bring anything.",
         correct: false,
         feedback: "Starting with a flat refusal and a command is likely to make her dig in further. She is panicing and scared — a confrontational approach may cost you more time than a calm one. Lead with the key information and a calm response."
       },
       {
-        text: "Wait by the door and give her two minutes — it is early in the evacuation and there is no immediate rush",
+        text: "Wait by the door and give her two minutes — it is early in the evacuation and there is no immediate rush.",
         correct: false,
         feedback: "Even though it is early in the evacuation, waiting is not the right move. Every cabin takes time and you have a full deck to sweep. You also cannot know how quickly the situation on the ship may change. Keep things moving."
       },
       {
-        text: "Step into the cabin, speak calmly, and tell her she needs to come now — she can bring warm clothes and good shoes, but not a suitcase",
+        text: "Step into the cabin, speak calmly, and tell her she needs to come now — she can bring warm clothes and good shoes, but not a suitcase.",
         correct: true,
-        feedback: "Good. You are giving her clear, specific information rather than a flat refusal. Staying calm also helps — she is likely frightened, and your tone sets the mood in the cabin."
+        feedback: "You are giving her clear, specific information rather than a flat refusal. Staying calm also helps — she is likely frightened, and your tone sets the mood in the cabin."
       }
     ]
   },
@@ -411,12 +411,12 @@ const steps = [
         feedback: "A large suitcase during an evacuation is a genuine hazard. You already told her she could not bring a suitcase — allowing it now undermines that and sets a precedent for other passengers who may be watching."
       },
       {
-        text: "Block the door and tell her the suitcase stays — explain it is a safety hazard in the corridors and on the stairs",
+        text: "Block the door and tell her the suitcase stays — explain it is a safety hazard in the corridors and on the stairs.",
         correct: true,
-        feedback: "Correct. You are being firm but giving her a reason, not just a rule."
+        feedback: "You are being firm but giving her a reason, not just a rule."
       },
       {
-        text: "Ignore the suitcase and focus on getting her out of the cabin — the zone leader can deal with it later",
+        text: "Ignore the suitcase and focus on getting her out of the cabin — the zone leader can deal with it later.",
         correct: false,
         feedback: "Once she is in the corridor with the suitcase it becomes much harder to take it from her. Address it now, before she leaves the cabin, when it is easiest to manage."
       }
@@ -427,17 +427,17 @@ const steps = [
     question: "What do you do?",
     choices: [
       {
-        text: "Tell her she cannot bring anything at all and she must leave right now",
+        text: "Tell her she cannot bring anything at all and she must leave right now.",
         correct: false,
         feedback: "To de-escalate the situation, let her bring the small handbag. The guidance is that passengers should only bring warm clothes and suitable shoes. However, refusing again risks another confrontation and more delay. Pick your battles."
       },
       {
-        text: "Tell her the small bag is fine and move her out of the cabin immediately",
+        text: "Tell her the small bag is fine and move her out of the cabin immediately.",
         correct: true,
-        feedback: "Correct. A small shoulder bag with a passport and phone is not a hazard and the confrontation over the suitcase has already cost time. The zone leader can handle any further issues at the muster station."
+        feedback: "A small shoulder bag with a passport and phone is not a hazard and the confrontation over the suitcase has already cost time. The zone leader can handle any further issues at the muster station."
       },
       {
-        text: "Ask her to wait while you check with the zone leader whether the bag is allowed",
+        text: "Ask her to wait while you check with the zone leader whether the bag is allowed.",
         correct: false,
         feedback: "You do not have a radio and leaving her to find the zone leader is not an option. You have enough information to make this call yourself — a small bag is fine. Use your judgement and keep things moving."
       }
@@ -500,7 +500,7 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Cabin Sweep: Passenger Won\'t Leave';
+  document.getElementById('bar-title').textContent = 'Cabin sweep: Passenger tries to bring luggage';
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
@@ -512,7 +512,7 @@ function renderIntro(content) {
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~2 min</div>
+          <div class="meta-value">~4 min</div>
           <div class="meta-label">Duration</div>
         </div>
       </div>
