@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nordic Crown — Emergency Training</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f4f2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 3rem;
+  }
+
+  .top-bar {
+    width: 100%;
+    background: #c0392b;
+    padding: 1rem 1.25rem 0.85rem;
+    color: white;
+  }
+
+  .top-bar .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 2px;
+  }
+
+  .top-bar .title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .top-bar .location {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 3px;
+  }
+
+  .progress-wrap {
+    background: rgba(255,255,255,0.3);
+    border-radius: 99px;
+    height: 3px;
+    margin-top: 12px;
+  }
+
+  .progress-fill {
+    height: 3px;
+    border-radius: 99px;
+    background: white;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 480px;
+    padding: 1.25rem;
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 1rem;
+    letter-spacing: 0.03em;
+  }
+
+  .scene-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1rem 1.125rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e8e6e0;
+  }
+
+  .scene-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .scene-text {
+    font-size: 15px;
+    color: #222;
+    line-height: 1.65;
+  }
+
+  .question-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .choice-btn {
+    width: 100%;
+    text-align: left;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    color: #222;
+    cursor: pointer;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .choice-btn:active { background: #f4f4f2; }
+
+  .choice-btn.correct {
+    border-color: #2e9e5b;
+    background: #f0faf4;
+  }
+
+  .choice-btn.wrong {
+    border-color: #c0392b;
+    background: #fdf2f1;
+  }
+
+  .choice-btn:disabled { cursor: default; }
+
+  .choice-letter {
+    font-size: 11px;
+    font-weight: 600;
+    color: #bbb;
+    min-width: 16px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .choice-btn.correct .choice-letter { color: #2e9e5b; }
+  .choice-btn.wrong .choice-letter { color: #c0392b; }
+
+  .feedback-card {
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+    border: 1px solid;
+  }
+
+  .feedback-card.correct {
+    background: #f0faf4;
+    border-color: #a8dfc0;
+  }
+
+  .feedback-card.wrong {
+    background: #fdf2f1;
+    border-color: #f5c0ba;
+  }
+
+  .feedback-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .feedback-card.correct .feedback-title { color: #1e7a42; }
+  .feedback-card.wrong .feedback-title { color: #a0291e; }
+
+  .feedback-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .next-btn {
+    width: 100%;
+    padding: 0.875rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .next-btn:active { background: #a0291e; }
+
+  .note-card {
+    background: #fffbf0;
+    border: 1px solid #f0d080;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: #7a5c00;
+    line-height: 1.55;
+  }
+
+  .note-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #b07800;
+    margin-bottom: 4px;
+  }
+
+  .intro-wrap { text-align: center; padding-top: 0.5rem; }
+
+  .intro-badge {
+    display: inline-block;
+    background: #fdf2f1;
+    color: #a0291e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 99px;
+    margin-bottom: 1rem;
+    border: 1px solid #f5c0ba;
+  }
+
+  .intro-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .meta-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  .meta-label {
+    font-size: 11px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .start-btn:active { background: #a0291e; }
+
+  .summary-wrap { text-align: center; padding-top: 0.5rem; }
+
+  .summary-score {
+    font-size: 52px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1;
+    margin: 0.5rem 0 0.25rem;
+  }
+
+  .summary-sub {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 1.5rem;
+  }
+
+  .review-list {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e8e6e0;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .review-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0eeea;
+  }
+
+  .review-item:last-child { border-bottom: none; }
+
+  .review-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .review-dot.correct { background: #2e9e5b; }
+  .review-dot.wrong { background: #c0392b; }
+
+  .review-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e8e6e0;
+    margin: 1.25rem 0;
+  }
+
+  .restart-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .restart-btn:active { background: #eee; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="label">Nordic Crown — Emergency Training</div>
+  <div class="title" id="bar-title">Life Raft: Raft Commander Duties</div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+</div>
+
+<div class="container" id="content"></div>
+
+<script>
+const steps = [
+  {
+    scene: "The life raft has been secured to the platform and inflated. You are the raft commander — the first crew member to board. The raft has water in the bottom from inflation. All bilge funnels are open and need to be secured.",
+    question: "What is your first task?",
+    choices: [
+      {
+        text: "Call out to passengers on the platform to start boarding immediately",
+        correct: false,
+        feedback: "Not quite. Passengers should not board until the raft is prepared. Your first task is to secure the bilge funnels and remove the water from the floor."
+      },
+      {
+        text: "Locate the bilge funnels, twist them closed to stop water entering, scoop out any remaining water, and secure each funnel with its velcro fastening",
+        correct: true,
+        feedback: "Good. The raft floor is now clear and ready for passengers."
+      },
+      {
+        text: "Check the emergency equipment box to make sure everything is on board",
+        correct: false,
+        feedback: "Not quite. Checking equipment is important but not your first task. Securing the bilge funnels and clearing the raft floor comes first."
+      }
+    ]
+  },
+  {
+    scene: "The evacuation is underway and passengers are boarding the life raft. The raft is now full. As raft commander you need to prepare the group for what comes next.",
+    question: "What is your first task now that the raft is full?",
+    choices: [
+      {
+        text: "Signal to the platform that the raft is full and ready to be released",
+        correct: false,
+        feedback: "Not quite. Before the raft is released there is an immediate task to carry out for everyone on board — locate the seasickness pills and distribute them to every person in the raft, including crew members."
+      },
+      {
+        text: "Distribute seasickness pills to everyone on board, including crew members",
+        correct: true,
+        feedback: "Good. Seasickness pills should be given to everyone as soon as the raft is full. The open sea can cause rapid onset of seasickness which weakens passengers and makes the situation harder to manage. Do not wait — distribute them immediately."
+      },
+      {
+        text: "Check that everyone is wearing their life jacket correctly",
+        correct: false,
+        feedback: "Not quite. Life jacket checks are carried out before boarding the raft. You only need to intervene if you actively notice someone wearing theirs incorrectly — do not delay distributing the seasickness pills to do a full check."
+      }
+    ]
+  },
+  {
+    scene: "The seasickness pills have been distributed. The raft is being towed away from the ship by a rescue boat. The temperature is dropping and the sea is rough.",
+    question: "What do you do next?",
+    choices: [
+      {
+        text: "Close the raft entrance covers to retain warmth, then deploy the sea anchor to stabilise the raft",
+        correct: true,
+        feedback: "Good. Closing the entrance covers retains body heat which is critical in cold conditions. Deploying the sea anchor reduces drifting and keeps the raft stable while you wait for rescue."
+      },
+      {
+        text: "Fire a flare to signal your position to the ship and any nearby vessels",
+        correct: false,
+        feedback: "Not quite. Flares should be used when you spot a rescue vessel or aircraft — firing one now without a target wastes a limited resource. Close the entrance covers and deploy the sea anchor first."
+      },
+      {
+        text: "Keep the entrance open so passengers can watch for rescue vessels",
+        correct: false,
+        feedback: "Not quite. Keeping the entrance open causes rapid heat loss which can lead to hypothermia, especially in cold northern waters. Close the covers to retain warmth — you can open them briefly if a vessel is spotted."
+      }
+    ]
+  }
+];
+
+let current = -1;
+let selected = null;
+let results = [];
+
+function setProgress(pct) {
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+function render() {
+  const content = document.getElementById('content');
+  if (current === -1) { renderIntro(content); return; }
+  if (current >= steps.length) { renderSummary(content); return; }
+
+  setProgress((current / steps.length) * 100);
+  const step = steps[current];
+  const answered = selected !== null;
+  const letters = ['A','B','C'];
+
+  const choicesHTML = step.choices.map((c, i) => {
+    let cls = 'choice-btn';
+    if (answered) {
+      if (c.correct) cls += ' correct';
+      else if (i === selected) cls += ' wrong';
+    }
+    return `<button class="${cls}" onclick="choose(${i})" ${answered ? 'disabled' : ''}>
+      <span class="choice-letter">${letters[i]}</span>
+      <span>${c.text}</span>
+    </button>`;
+  }).join('');
+
+  let feedbackHTML = '';
+  if (answered) {
+    const c = step.choices[selected];
+    const isLast = current === steps.length - 1;
+    feedbackHTML = `
+      <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
+        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-text">${c.feedback}</div>
+      </div>
+      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+  }
+
+  content.innerHTML = `
+    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="scene-card">
+      <div class="scene-label">Situation</div>
+      <div class="scene-text">${step.scene}</div>
+    </div>
+    <div class="question-label">${step.question}</div>
+    <div class="choices">${choicesHTML}</div>
+    <div>${feedbackHTML}</div>`;
+}
+
+function renderIntro(content) {
+  setProgress(0);
+  document.getElementById('bar-title').textContent = 'Life Raft: Raft Commander Duties';
+  content.innerHTML = `
+    <div class="intro-wrap">
+      <div class="intro-badge">Emergency Training Scenario</div>
+      <div class="intro-title">You are the first crew member in the life raft</div>
+      <div class="intro-desc">The evacuation is underway. As raft commander you are responsible for preparing the raft and managing the boarding process. Work through each situation and make the right call.</div>
+      <div class="intro-meta">
+        <div class="meta-item">
+          <div class="meta-value">3</div>
+          <div class="meta-label">Situations</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value">~2 min</div>
+          <div class="meta-label">Duration</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-value">~3 min</div>
+          <div class="meta-label">Duration</div>
+        </div>
+      </div>
+      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+    </div>`;
+}
+
+function renderSummary(content) {
+  setProgress(100);
+  document.getElementById('bar-title').textContent = 'Results';
+  const score = results.filter(r => r.correct).length;
+  const total = results.length;
+  let msg = '';
+  if (score === total) msg = 'All correct — if this happens on board, you are ready.';
+  else if (score >= 2) msg = 'Good. Review the situation you missed before your next drill.';
+  else msg = 'Worth revisiting before your next drill — talk through these situations with your zone leader.';
+
+  const reviewItems = results.map((r, i) => `
+    <div class="review-item">
+      <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
+      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+    </div>`).join('');
+
+  content.innerHTML = `
+    <div class="summary-wrap">
+      <div class="step-label">Scenario complete</div>
+      <div class="summary-score">${score}/${total}</div>
+      <div class="summary-sub">${msg}</div>
+    </div>
+    <div class="review-list">${reviewItems}</div>
+    <div class="divider"></div>
+    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+}
+
+function startScenario() {
+  current = 0; selected = null; results = [];
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function choose(i) {
+  if (selected !== null) return;
+  selected = i;
+  results.push({ correct: steps[current].choices[i].correct });
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function next() {
+  current++; selected = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  current = -1; selected = null; results = [];
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+render();
+</script>
+</body>
+</html>
