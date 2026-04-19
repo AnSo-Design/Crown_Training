@@ -381,44 +381,44 @@
 <script>
 const steps = [
   {
-    scene: "The life raft has been secured to the platform and inflated. You are the raft commander — the first crew member to board. The raft has water in the bottom from inflation. All bilge funnels are open and need to be secured.",
+    scene: "The life raft has been secured to the platform and inflated. You enter and the raft has water in the bottom. ",
     question: "What is your first task?",
     choices: [
       {
-        text: "Call out to passengers on the platform to start boarding immediately",
+        text: "Call out to passengers on the platform to start boarding immediately.",
         correct: false,
-        feedback: "Not quite. Passengers should not board until the raft is prepared. Your first task is to secure the bilge funnels and remove the water from the floor."
+        feedback: "Passengers should not board until the raft is prepared. Your first task is to secure the bilge funnels and remove the water from the floor."
       },
       {
-        text: "Locate the bilge funnels, twist them closed to stop water entering, scoop out any remaining water, and secure each funnel with its velcro fastening",
+        text: "Locate the bilge funnels, scoop out any remaining water, and secure each funnel with its velcro fastening.",
         correct: true,
-        feedback: "Good. The raft floor is now clear and ready for passengers."
+        feedback: "The raft floor is now clear and ready for passengers."
       },
       {
-        text: "Check the emergency equipment box to make sure everything is on board",
+        text: "Check the emergency equipment box to make sure everything is on board.",
         correct: false,
-        feedback: "Not quite. Checking equipment is important but not your first task. Securing the bilge funnels and clearing the raft floor comes first."
+        feedback: "Checking equipment is important but not your first task. Securing the bilge funnels and clearing the raft floor comes first."
       }
     ]
   },
   {
-    scene: "The evacuation is underway and passengers are boarding the life raft. The raft is now full. As raft commander you need to prepare the group for what comes next.",
+    scene: "Passenger have now been allowed to board, and the life raft is full. As raft commander you need to prepare the group for what comes next.",
     question: "What is your first task now that the raft is full?",
     choices: [
       {
-        text: "Signal to the platform that the raft is full and ready to be released",
+        text: "Signal to the platform that the raft is full and ready to be released.",
         correct: false,
-        feedback: "Not quite. Before the raft is released there is an immediate task to carry out for everyone on board — locate the seasickness pills and distribute them to every person in the raft, including crew members."
+        feedback: "Before the raft is released there is an immediate task to carry out for everyone on board — locate the seasickness pills and distribute them to every person in the raft, including crew members."
       },
       {
-        text: "Distribute seasickness pills to everyone on board, including crew members",
+        text: "Distribute seasickness pills to everyone on board, including crew members.",
         correct: true,
-        feedback: "Good. Seasickness pills should be given to everyone as soon as the raft is full. The open sea can cause rapid onset of seasickness which weakens passengers and makes the situation harder to manage. Do not wait — distribute them immediately."
+        feedback: "Seasickness pills should be given to everyone as soon as the raft is full. The open sea can cause rapid onset of seasickness which can easily spread amongst the passengers. Distribute them immediately."
       },
       {
-        text: "Check that everyone is wearing their life jacket correctly",
+        text: "Check that everyone is wearing their life jacket correctly.",
         correct: false,
-        feedback: "Not quite. Life jacket checks are carried out before boarding the raft. You only need to intervene if you actively notice someone wearing theirs incorrectly — do not delay distributing the seasickness pills to do a full check."
+        feedback: "Life jacket checks are carried out before boarding the raft. You only need to intervene if you actively notice someone wearing theirs incorrectly."
       }
     ]
   },
@@ -427,19 +427,19 @@ const steps = [
     question: "What do you do next?",
     choices: [
       {
-        text: "Close the raft entrance covers to retain warmth, then deploy the sea anchor to stabilise the raft",
+        text: "Close the raft entrance covers to retain warmth, then deploy the sea anchor to stabilise the raft.",
         correct: true,
-        feedback: "Good. Closing the entrance covers retains body heat which is critical in cold conditions. Deploying the sea anchor reduces drifting and keeps the raft stable while you wait for rescue."
+        feedback: "Closing the entrance covers retains body heat which is critical. Deploying the sea anchor reduces drifting and keeps the raft stable while you wait for rescue."
       },
       {
-        text: "Fire a flare to signal your position to the ship and any nearby vessels",
+        text: "Fire a flare to signal your position to the ship and any nearby vessels.",
         correct: false,
-        feedback: "Not quite. Flares should be used when you spot a rescue vessel or aircraft — firing one now without a target wastes a limited resource. Close the entrance covers and deploy the sea anchor first."
+        feedback: "Flares should be used when you spot a rescue vessel or aircraft — firing one now without a target wastes a limited resource. Close the entrance covers and deploy the sea anchor first."
       },
       {
-        text: "Keep the entrance open so passengers can watch for rescue vessels",
+        text: "Keep the entrance open so passengers can watch for rescue vessels.",
         correct: false,
-        feedback: "Not quite. Keeping the entrance open causes rapid heat loss which can lead to hypothermia, especially in cold northern waters. Close the covers to retain warmth — you can open them briefly if a vessel is spotted."
+        feedback: "Not quite. Keeping the entrance open causes rapid heat loss which can lead to hypothermia, especially in cold northern waters. Close the covers to retain warmth and have a crew member on the lookout for rescue vessels."
       }
     ]
   }
@@ -504,7 +504,7 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">You are the first crew member in the life raft</div>
+      <div class="intro-title">You are the raft commander and must prepare a life raft for passenger evacuation</div>
       <div class="intro-desc">The evacuation is underway. As raft commander you are responsible for preparing the raft and managing the boarding process. Work through each situation and make the right call.</div>
       <div class="intro-meta">
         <div class="meta-item">
@@ -512,11 +512,7 @@ function renderIntro(content) {
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~2 min</div>
-          <div class="meta-label">Duration</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-value">~3 min</div>
+          <div class="meta-value">~4 min</div>
           <div class="meta-label">Duration</div>
         </div>
       </div>
