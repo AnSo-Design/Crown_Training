@@ -381,23 +381,23 @@
 <script>
 const steps = [
   {
-    scene: "The evacuation alarm has sounded. You are moving passengers toward the muster station. Most are following instructions calmly. But one woman is standing completely still in the corridor, staring at the wall. She does not respond when you speak to her. She is not injured — she is frozen.",
+    scene: "The evacuation alarm has sounded. You are moving passengers toward the muster station. Most are following instructions calmly, but one woman is standing completely still in the corridor, staring at the wall. She does not respond when you speak to her. She is not injured — she is frozen.",
     question: "What do you do?",
     choices: [
       {
         text: "Leave her and continue — she will follow once she sees others moving",
         correct: false,
-        feedback: "Not quite. A passenger who is completely frozen and unresponsive is unlikely to follow on her own. Around 12–14% of people in an emergency become paralysed by fear and cannot act without direct help. She needs your attention now — not after the others have passed."
+        feedback: "A passenger who is completely frozen and unresponsive is unlikely to follow on her own. Around 12–14% of people in an emergency become paralysed by fear and cannot act without direct help."
       },
       {
         text: "Take her gently but firmly by the arm, make eye contact, speak calmly and clearly, and guide her physically toward the muster station",
         correct: true,
-        feedback: "Good. Around 12–14% of passengers in an emergency become paralysed by fear and need direct physical guidance to move. Stay calm, make eye contact, speak clearly and guide her with physical contact. She is not being difficult — she is incapacitated."
+        feedback: "Around 12–14% of passengers in an emergency become paralysed by fear and need direct physical guidance to move. Stay calm, make eye contact, speak clearly and guide her with physical contact."
       },
       {
         text: "Raise your voice and repeat the instruction to move — she may just need a stronger signal",
         correct: false,
-        feedback: "Not quite. Raising your voice is unlikely to work. The roughly 12–14% of passengers who freeze in an emergency cannot process instructions on their own in that state — what they need is direct physical presence and calm guidance, not a louder command."
+        feedback: "Raising your voice is unlikely to work. The roughly 12–14% of passengers who freeze in an emergency cannot process instructions on their own in that state — what they need is direct physical presence and calm guidance, not a louder command."
       }
     ]
   },
@@ -408,17 +408,17 @@ const steps = [
       {
         text: "Let him continue — he seems to know what he is doing and passengers are following calmly",
         correct: false,
-        feedback: "Not quite. Around 5% of people in an emergency take initiative and try to help — but an unofficial route creates real risks. Passengers may miss their muster station or block official routes. Redirect them now."
+        feedback: "Around 5% of people in an emergency take initiative and try to help — but an unofficial route creates real risks. Passengers may miss their muster station or block official routes. Redirect them now."
       },
       {
         text: "Approach him calmly, thank him for trying to help, but tell him clearly that everyone must follow the official route and guide the group back",
         correct: true,
-        feedback: "Good. Around 5% of passengers will take independent action in an emergency. Acknowledge his intention, be firm about the official route, and redirect the group calmly. Other passengers are watching how you handle this."
+        feedback: "Around 5% of passengers will take independent action in an emergency. Acknowledge his intention, be firm about the official route, and redirect the group calmly. Other passengers are watching how you handle this."
       },
       {
         text: "Shout across to the group to stop and come back — the man is giving wrong directions",
         correct: false,
-        feedback: "Not quite. Shouting contradicting instructions creates confusion and may cause panic. Approach him directly, speak calmly and firmly, and redirect the group without drawing attention to the conflict."
+        feedback: "Shouting contradicting instructions creates confusion and may cause panic. Approach him directly, speak calmly and firmly, and redirect the group without drawing attention to the conflict."
       }
     ]
   }
@@ -491,11 +491,7 @@ function renderIntro(content) {
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~2 min</div>
-          <div class="meta-label">Duration</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-value">~2 min</div>
+          <div class="meta-value">~3 min</div>
           <div class="meta-label">Duration</div>
         </div>
       </div>
