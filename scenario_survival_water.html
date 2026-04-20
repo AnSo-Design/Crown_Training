@@ -370,7 +370,7 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Survival at Sea: If You End Up in the Water</div>
+  <div class="title" id="bar-title">Survival at Sea: If you end up in the water</div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -387,17 +387,17 @@ const steps = [
       {
         text: "Float on your back with your arms and legs spread out to stay stable",
         correct: false,
-        feedback: "Not quite. Spreading your limbs increases the surface area exposed to cold water and accelerates heat loss. You need to minimise movement and keep still water close to your body."
+        feedback: "Spreading your limbs increases the surface area exposed to cold water and accelerates heat loss. You need to minimise movement and keep still water close to your body."
       },
       {
         text: "Curl into the foetal position — bend your knees up toward your body and hold your arms close to your sides",
         correct: true,
-        feedback: "Good. The foetal position creates as little movement in the water around you as possible, which slows heat loss. Keep your knees bent up in front of you and your arms held close to your body — particularly around the armpits, groin and neck where the major blood vessels run close to the surface."
+        feedback: "The foetal position creates as little movement in the water around you as possible, which slows heat loss. Keep your knees bent up in front of you and your arms held close to your body — particularly around the armpits, groin and neck where the major blood vessels run close to the surface."
       },
       {
         text: "Swim slowly toward the nearest vessel to stay warm through movement",
         correct: false,
-        feedback: "Not quite. Swimming increases heat loss significantly. Unless rescue is very close, stay still and conserve your energy. Movement accelerates the cold water circulating around your body."
+        feedback: "Swimming increases heat loss significantly. Unless rescue is very close, stay still and conserve your energy. Movement accelerates the cold water circulating around your body."
       }
     ]
   },
@@ -408,17 +408,17 @@ const steps = [
       {
         text: "Each person swims toward the raft independently — the fastest swimmers go first and pull it closer",
         correct: false,
-        feedback: "Not quite. Splitting up and swimming independently increases heat loss for everyone. If you are moving toward the raft as a group, form a snake — lie on your back, place your legs around the waist of the person in front, and swim in unison. The person at the back sets the pace."
+        feedback: "Splitting up and swimming independently increases heat loss for everyone. If you are moving toward the raft as a group, form a snake — lie on your back, place your legs around the waist of the person in front, and swim in unison. The person at the back sets the pace."
       },
       {
-        text: "Form a tight circle, hold on to each other and interlock your legs to conserve warmth while you assess the situation",
-        correct: true,
-        feedback: "Good. In a group, forming a tight circle and holding on to each other reduces heat loss for everyone. If anyone is particularly weak or injured they can be placed in the centre. Once you have assessed the situation you can decide whether to move toward the raft as a group — never let go of each other until everyone is safe."
-      },
-      {
-        text: "Stay still and wait — moving toward the raft is not worth the energy expenditure",
+        text: "Stay in a tight circle and wait. Don't exhaust yourselves swimming",
         correct: false,
-        feedback: "Not quite. If the raft is nearby it is worth moving toward it — but do so as a group in a snake formation, not individually. Once you have hold of a rescue aid, do not let go — even releasing it for a second risks being separated from it."
+        feedback: "The circle is for when you are waiting in place with no immediate rescue nearby. Since the raft is visible and reachable, you should move toward it — but as a group in a snake formation."
+      },
+      {
+        text: "Swim together in a snake formation",
+        correct: true,
+        feedback: "In a snake formation each person lies on their back, places their legs around the waist of the person in front, and swims in unison. The person at the back sets the pace. This keeps the group connected, minimises heat loss, and ensures no one is left behind."
       }
     ]
   }
@@ -483,7 +483,7 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">You have ended up in the water during an emergency</div>
+      <div class="intro-title">You have ended up in the water during an emergency evacuation</div>
       <div class="intro-desc">Staying out of the water is always the priority — water conducts heat around 25 times faster than air. But if you end up in the water, how you position yourself can make the difference.</div>
       <div class="intro-meta">
         <div class="meta-item">
@@ -491,11 +491,7 @@ function renderIntro(content) {
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~2 min</div>
-          <div class="meta-label">Duration</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-value">~2 min</div>
+          <div class="meta-value">~3 min</div>
           <div class="meta-label">Duration</div>
         </div>
       </div>
