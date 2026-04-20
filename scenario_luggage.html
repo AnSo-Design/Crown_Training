@@ -66,7 +66,7 @@
   }
 
   .step-label {
-    font-size: 12px;
+    font-size: 18px;
     color: #888;
     text-align: center;
     margin-bottom: 1rem;
@@ -82,7 +82,7 @@
   }
 
   .scene-label {
-    font-size: 10px;
+    font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #aaa;
@@ -358,7 +358,7 @@
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 14px;
-    color: #888;
+    color: #222;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
@@ -381,7 +381,7 @@
 <script>
 const steps = [
   {
-    scene: "While evacuating cabins, you knock on a door and open it. A woman is pulling clothes out of the wardrobe and stuffing them into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
+    scene: "While evacuating cabins, you knock on a door and open it. A woman is packing her things into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
     question: "What is your first response?",
     choices: [
       {
@@ -500,7 +500,7 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Cabin sweep: Passenger tries to bring luggage';
+  document.getElementById('bar-title').textContent = 'Cabin Sweep: Passenger Tries to Bring Luggage';
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
