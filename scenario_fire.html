@@ -387,38 +387,38 @@ const steps = [
       {
         text: "Use the CO₂ extinguisher — it is the closest and will act fast",
         correct: false,
-        feedback: "Wrong. Never use CO₂ on a cooking oil fire. The cold blast causes the burning oil to explode outward violently. This can be fatal."
+        feedback: "Never use CO₂ on a cooking oil fire. The cold blast causes the burning oil to explode outward violently. This can be fatal."
       },
       {
         text: "Use the wet chemical extinguisher or smother the fire with the fire blanket",
         correct: true,
-        feedback: "Good. A grease fire is Class F and requires either a wet chemical extinguisher or a fire blanket. The blanket smothers the fire by cutting off its oxygen supply. Never use CO₂ or water on burning oil."
+        feedback: "A grease fire is Class F and requires either a wet chemical extinguisher or a fire blanket. The blanket smothers the fire by cutting off its oxygen supply. Never use CO₂ or water on burning oil."
       },
       {
         text: "Pour water on the fire to cool it down quickly",
         correct: false,
-        feedback: "Wrong. Water on a hot oil fire causes a violent and dangerous steam explosion that spreads burning oil. This is one of the most dangerous mistakes you can make in a galley fire. Warning: using water on a grease fire can cause a violent explosion."
+        feedback: "Water on a hot oil fire causes a violent and dangerous steam explosion that spreads burning oil. This is one of the most dangerous mistakes you can make in a galley fire. Warning: using water on a grease fire can cause a violent explosion."
       }
     ]
   },
   {
-    scene: "You are working in Natt when you notice smoke and sparks coming from a speaker mounted on the wall. There is a CO₂ extinguisher and a foam extinguisher nearby.",
+    scene: "You are working in Natt when you notice smoke and sparks coming from a large speaker on the floor. There is a CO₂ extinguisher and a foam extinguisher nearby.",
     question: "What do you do?",
     choices: [
       {
-        text: "Use the foam extinguisher — it is larger and will cover more area",
+        text: "Use the foam extinguisher",
         correct: false,
-        feedback: "Wrong. Foam conducts electricity and must never be used on an electrical fire. Using it here could electrocute you. Always use CO₂ on electrical fires."
+        feedback: "Foam conducts electricity and must never be used on an electrical fire. Using it here could electrocute you. Always use CO₂ on electrical fires."
       },
       {
         text: "Use the CO₂ extinguisher",
         correct: true,
-        feedback: "Good. Electrical fires are Class E and require CO₂. It does not conduct electricity and leaves no damaging residue on equipment. Never use water or foam on an electrical fire."
+        feedback: "Electrical fires are Class E and require CO₂. It does not conduct electricity and leaves no damaging residue on equipment. Never use water or foam on an electrical fire."
       },
       {
         text: "Do not use any extinguisher — cut the power first and then assess",
         correct: false,
-        feedback: "Not quite. Cutting the power if possible is good practice, but if the fire is already spreading you need to act immediately with CO₂. Do not wait if the fire is growing."
+        feedback: "Cutting the power if possible is good practice, but if the fire is already spreading you need to act immediately with CO₂. Do not wait if the fire is growing."
       }
     ]
   },
@@ -427,19 +427,19 @@ const steps = [
     question: "What do you do?",
     choices: [
       {
-        text: "Raise the alarm, then use the water extinguisher on the lint fire",
+        text: "Use the water extinguisher on the lint fire",
         correct: true,
-        feedback: "Good. Lint is a Class A fire — solid combustible material — and water is the correct extinguisher. Raising the alarm first ensures help is on the way before you act."
+        feedback: "Lint is a Class A fire — solid combustible material — and water is the correct extinguisher. Raise the alarm if it becomes too big to handle."
       },
       {
-        text: "Use the CO₂ extinguisher — it is faster and cleaner in an enclosed space.",
+        text: "Use the CO₂ extinguisher",
         correct: false,
-        feedback: "Not quite. CO₂ smothers a fire by displacing oxygen, but it does not cool the material down. On a Class A fire like burning lint, this means the fire can re-ignite once the CO₂ disperses. Water cools the lint and prevents re-ignition, which is why it is the correct choice here. CO₂ is only appropriate for Class A as a last resort when no water or foam is available."
+        feedback: "CO₂ smothers a fire by displacing oxygen, but it does not cool the material down. On a Class A fire like burning lint, this means the fire can re-ignite once the CO₂ disperses. Water cools the lint and prevents re-ignition. CO₂ is only appropriate for Class A as a last resort when no water or foam is available."
       },
       {
-        text: "Raise the alarm and leave — laundry room fires can spread quickly and it is too dangerous to act alone.",
+        text: "Raise the alarm, close the door, and wait for someone else to arrive",
         correct: false,
-        feedback: "Wrong. A small lint fire caught early is manageable with the right extinguisher. Leaving without acting allows it to spread. Raise the alarm and use the water extinguisher — if the fire grows beyond what you can control, evacuate immediately."
+        feedback: "A small lint fire caught early is manageable with the right extinguisher. Leaving without acting allows it to spread. Raise the alarm and use the water extinguisher — if the fire grows beyond what you can control, evacuate immediately."
       }
     ]
   }
@@ -481,7 +481,7 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? 'Good choice' : 'Wrong'}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
       <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
@@ -504,7 +504,7 @@ function renderIntro(content) {
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">You encounter three different fires during your shift</div>
+      <div class="intro-title">You encounter three different fires requiring different fire extinguishers</div>
       <div class="intro-desc">Not all fires are the same, and using the wrong extinguisher can make things significantly worse. Work through each situation and choose the right response.</div>
       <div class="intro-meta">
         <div class="meta-item">
