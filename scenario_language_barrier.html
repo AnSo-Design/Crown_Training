@@ -381,23 +381,23 @@
 <script>
 const steps = [
   {
-    scene: "The evacuation alarm is sounding. You find a couple in a corridor looking around frantically. You try to speak to them but they do not understand. They are gesturing and speaking to each other — it sounds like Mandarin or Korean. They are not moving.",
+    scene: "The evacuation alarm is sounding. You find a couple in a corridor looking around frantically. They are gesturing and speaking to each other and the language barrier means you can't understand them and vice verca.",
     question: "What do you do?",
     choices: [
       {
         text: "Speak slowly and clearly in English, repeating the instructions until they understand",
         correct: false,
-        feedback: "Not quite. Speaking slowly or loudly does not help when there is no shared language. You need a different approach entirely — use your body, not your words."
+        feedback: "Speaking slowly or loudly does not help when there is no shared language. You need a different approach entirely — use your body, not your words."
       },
       {
-        text: "Make direct eye contact, point firmly in the direction of the muster station, and start walking — gesturing for them to follow",
+        text: "Make direct eye contact, point firmly in the direction of the muster station, and start walking while gesturing for them to follow",
         correct: true,
-        feedback: "Good. When language fails, physical communication takes over. Point clearly, make eye contact, and lead the way with confidence. Most people will follow if you move with purpose."
+        feedback: "When language fails, physical communication takes over. Point clearly, make eye contact, and lead the way with confidence. Most people will follow if you move with purpose."
       },
       {
-        text: "Find a crew member who speaks their language before doing anything else",
+        text: "Find someone who speaks their language before doing anything else",
         correct: false,
-        feedback: "Not quite. There is no time to search for a translator. Use gestures, eye contact and physical presence to get them moving immediately — a translator can help later."
+        feedback: "There is no time to search for a translator. Use gestures, eye contact and physical presence to get them moving immediately — a translator can help later."
       }
     ]
   },
@@ -408,17 +408,17 @@ const steps = [
       {
         text: "Point to the life jacket and then to their chest and hope they understand",
         correct: false,
-        feedback: "Not quite. Vague pointing is not enough when the stakes are high. You need to demonstrate clearly — put on your own life jacket or mime the steps directly so they can follow each movement."
+        feedback: "Vague pointing is not enough when the stakes are high. You need to demonstrate clearly by putting on your own life jacket or mime the steps directly so they can follow each movement."
       },
       {
         text: "Take your own life jacket and put it on slowly in front of them, step by step, so they can copy each movement",
         correct: true,
-        feedback: "Good. Demonstration is your most effective tool when language fails. Go slowly, make each step obvious, and check that they are copying correctly before moving to the next step."
+        feedback: "Demonstration is your most effective tool when language fails. Go slowly, make each step obvious, and check that they are copying correctly before moving to the next step."
       },
       {
         text: "Ask another passenger nearby if they speak the same language",
         correct: false,
-        feedback: "Not quite. Looking for a translator takes time you may not have. Demonstrate the life jacket yourself — a clear physical demonstration works across any language barrier."
+        feedback: "Looking for a translator takes time you may not have. Demonstrate the life jacket yourself — a clear physical demonstration works across any language barrier."
       }
     ]
   },
@@ -429,17 +429,17 @@ const steps = [
       {
         text: "Let them look — they will come back when they cannot find their group",
         correct: false,
-        feedback: "Not quite. Passengers who drift from the muster station during an evacuation are a serious risk. They may end up in the wrong place, delay boarding, or cause others to follow."
+        feedback: "Passengers who drift from the muster station during an evacuation are a serious risk. They may end up in the wrong place, delay boarding, or cause others to follow."
       },
       {
-        text: "Stand close to them, make eye contact, and use a clear firm gesture — open palm facing them — to signal stay. Repeat calmly every time they try to move.",
+        text: "Stand close to them, make eye contact, and use a clear firm gesture — open palm facing them — to signal stay. Repeat calmly every time they try to move",
         correct: true,
-        feedback: "Good. A clear repeated stay gesture combined with calm eye contact is effective even without shared language. Stay physically close so they feel anchored. Your presence communicates that moving is not an option right now."
+        feedback: "A clear repeated stay gesture combined with calm eye contact is effective even without shared language. Stay physically close so they feel anchored. Your presence communicates that moving is not an option right now."
       },
       {
         text: "Raise your voice and point firmly back to their position every time they move",
         correct: false,
-        feedback: "Not quite. Raising your voice may increase their anxiety and make them more likely to flee toward their group. Keep your tone and body language calm — firmness without aggression is more effective."
+        feedback: "Raising your voice may increase their anxiety and make them more likely to look for their group. Keep your tone and body language calm — firmness without aggression is more effective."
       }
     ]
   }
