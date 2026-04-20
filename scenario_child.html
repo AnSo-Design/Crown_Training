@@ -551,6 +551,9 @@ function renderSummary(content) {
 
 function startScenario() {
   current = 0; selected = null; results = [];
+  steps.forEach(step => {
+    step.choices.sort(() => Math.random() - 0.5);
+  });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -571,6 +574,9 @@ function next() {
 
 function restart() {
   current = -1; selected = null; results = [];
+  steps.forEach(step => {
+    step.choices.sort(() => Math.random() - 0.5);
+  });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
