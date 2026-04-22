@@ -402,18 +402,18 @@ const steps = [
     ]
   },
   {
-    scene: "Passenger have now been allowed to board, and the life raft is full. As raft commander you need to prepare the group for what comes next.",
+    scene: "Passenger have now been allowed to board, and the life raft is full. What do you do next?",
     question: "What is your first task now that the raft is full?",
     choices: [
       {
-        text: "Signal to the platform that the raft is full and ready to be released",
-        correct: false,
-        feedback: "Before the raft is released there is an immediate task to carry out for everyone on board — locate the seasickness pills and distribute them to every person in the raft, including crew members."
+        text: "Signal to the platform that the raft is full and ready to be towed away",
+        correct: true,
+        feedback: "When the raft reaches capacity, the first priority is to signal the towboat and confirm you are ready for deployment — the raft must be moved clear of the vessel without delay."
       },
       {
         text: "Distribute seasickness pills to everyone on board, including crew members",
-        correct: true,
-        feedback: "Seasickness pills should be given to everyone as soon as the raft is full. The open sea can cause rapid onset of seasickness which can easily spread amongst the passengers. Distribute them immediately."
+        correct: false,
+        feedback: "easickness pills are important, but not the first priority. Signal the towboat to confirm readiness for deployment first"
       },
       {
         text: "Check that everyone is wearing their life jacket correctly",
@@ -422,12 +422,33 @@ const steps = [
       }
     ]
   },
+ {
+    scene: "The tow boat has been signaled and you are ready to be moved.",
+    question: "What is your next immediate concern?",
+    choices: [
+      {
+        text: "Verify the tow line is securely attached to the raft",
+        correct: false,
+        feedback: "The tow line is the responsibility of the towboat crew. Your focus as raft commander is on the people inside the raft — distribute seasickness pills to everyone on board now that you are underway."
+      },
+      {
+        text: "Distribute seasickness pills to everyone on board, including crew members",
+        correct: true,
+        feedback: "Now that the towboat is signalled and the raft is ready to move, distribute seasickness pills immediately. The open sea can cause rapid onset of nausea, and it spreads quickly in a confined raft."
+      },
+      {
+        text: "Check that everyone is wearing their life jacket correctly",
+        correct: false,
+        feedback: "Life jacket checks are carried out before boarding the raft. You only need to intervene if you actively notice someone wearing theirs incorrectly."
+      }
+    ]
+  }, 
   {
-    scene: "The seasickness pills have been distributed. The raft is being towed away from the ship by a rescue boat. The temperature is dropping and the sea is rough in a life raft.",
+    scene: "The raft is being towed to safety, but the temperature is dropping inside the raft and the sea is rough for a small vessel.",
     question: "What do you do next?",
     choices: [
       {
-        text: "Close the raft entrance covers to retain warmth, then deploy the sea anchor to stabilise the raft",
+        text: "Close the raft entrance covers and advice passengers to move together to retain warmth. Then deploy the sea anchor to stabilise the raft",
         correct: true,
         feedback: "Closing the entrance covers retains body heat which is critical. Deploying the sea anchor reduces drifting and keeps the raft stable while you wait for rescue."
       },
@@ -508,7 +529,7 @@ function renderIntro(content) {
       <div class="intro-desc">The evacuation is underway. As raft commander you are responsible for preparing the raft and managing the boarding process. Work through each situation and make the right call.</div>
       <div class="intro-meta">
         <div class="meta-item">
-          <div class="meta-value">3</div>
+          <div class="meta-value">4</div>
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
