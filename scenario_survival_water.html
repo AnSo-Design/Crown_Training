@@ -402,6 +402,27 @@ const steps = [
     ]
   },
   {
+    scene: "You spot three other people together in the water.",
+    question: "What should you do?",
+    choices: [
+      {
+        text: "Stay in foetal position alone",
+        correct: false,
+        feedback: "Swim towards the group on your back using only your legs to propel you. This conserves body heat while you move, and staying together as a group significantly increases your chances of being seen and rescued."
+      },
+      {
+        text: "Swim towards the group on your back using only your legs to propel you",
+        correct: true,
+        feedback: "Yes, this conserves body heat while you move, and being in a group significantly increases your chances of being seen and rescued."
+      },
+      {
+        text: "Use your arms and legt to swim quickly towards the group — stay warm through movement",
+        correct: false,
+        feedback: "This kind of swimming increases heat loss significantly. Swim towards the group on your back using only your legs to propel you. This conserves body heat while you move, and staying together as a group significantly increases your chances of being seen and rescued."
+      }
+    ]
+  },
+  {
     scene: "You are in the water with a group of other survivors. A life raft is visible nearby but not within immediate reach.",
     question: "What do you do?",
     choices: [
@@ -487,11 +508,11 @@ function renderIntro(content) {
       <div class="intro-desc">Staying out of the water is always the priority — water conducts heat around 25 times faster than air. But if you end up in the water, how you position yourself can make the difference.</div>
       <div class="intro-meta">
         <div class="meta-item">
-          <div class="meta-value">2</div>
+          <div class="meta-value">3</div>
           <div class="meta-label">Situations</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~3 min</div>
+          <div class="meta-value">~4 min</div>
           <div class="meta-label">Duration</div>
         </div>
       </div>
