@@ -534,9 +534,9 @@ function renderSummary(content) {
   // ═══════════════════════════════════════════════════════════════
   // SUMMARY MESSAGES — edit the three result messages below
   // ═══════════════════════════════════════════════════════════════
-  if (score === total) msg = 'FILL IN — Message shown when the crew member gets everything correct.';
-  else if (score >= Math.ceil(total / 2)) msg = 'FILL IN — Message shown when the crew member gets more than half correct.';
-  else msg = 'FILL IN — Message shown when the crew member gets less than half correct.';
+  if (score === total) msg = 'All correct — excellent work.';
+  else if (score >= Math.ceil(total / 2)) msg = 'Good. Review the situations you missed before the next drill.';
+  else msg = 'Go through this scenario with your zone leader or at a possible briefing.';
   // ═══════════════════════════════════════════════════════════════
 
   const reviewItems = results.map((r, i) => `
