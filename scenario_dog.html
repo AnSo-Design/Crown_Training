@@ -310,6 +310,26 @@
     margin-bottom: 1.5rem;
   }
 
+ .reminder-card {
+    background: #f0f4ff;
+    border: 1px solid #c0cdf0;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: #3a4a7a;
+    line-height: 1.6;
+  }
+
+  .reminder-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6070b0;
+    margin-bottom: 4px;
+  }
+
   .review-list {
     background: white;
     border-radius: 14px;
@@ -381,13 +401,13 @@
 <script>
 const steps = [
   {
-    scene: "You are evacuating cabins and a woman approaches holding a dog. She insists on keeping the dog with her throughout the evacuation. The ship is at half capacity.",
+    scene: "You are evacuating cabins and a woman approaches holding a dog. She insists on keeping the dog with her throughout the evacuation.",
     question: "What do you do?",
     choices: [
       {
         text: "Tell her calmly that she can bring the dog with her to the assembly station, where they can help her further.",
         correct: true,
-        feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. From the assembly station the zone leaders can communicate with the bridge and make the final decision."
+        feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. From the assembly station the zone leader can communicate with the bridge and make the final decision."
       },
       {
         text: "Tell her animals are never allowed during evacuation and demand that she leave the dog behind",
@@ -401,24 +421,50 @@ const steps = [
       }
     ]
   },
-  {
-    scene: "The situation has changed. The ship is now at full capacity.",
+ {
+    scene: "The woman is first brought to the muster station. Here a collegue tells you that you should not have allowed the dog and that you need to go back and leave it in the cabin.",
     question: "What do you do?",
     choices: [
       {
-        text: "Allow her to board with the dog.",
-        correct: false,
-        feedback: "With full ship, The ship is at full capacity and there is no space for the dog. With a full ship human life is always the priority. Always base your decision on the situation in front of you."
-      },
-      {
-        text: "Do not allow her to board with the dog. You know the ship is at full capacity, and human life is your priority.",
+        text: "Stand by your decision and continue escorting the woman and her dog to the assembly station",
         correct: true,
-        feedback: "Correct. If the ship is at full capacity, there is no room for pets no matter the passenger's reaction."
+        feedback: "You made the right call — a dog can almost always be evacuated with their owner and the final decision will be made at the assembly station by the zone leader and bridge. Keep moving."
       },
       {
-        text: "Call your zone leader and wait for their decision before doing anything",
+        text: "Go back to the cabin and leave the dog behind to avoid conflict with your colleague",
         correct: false,
-        feedback: "Your zone leader is managing the whole muster station. This is a situation you can judge for yourself."
+        feedback: "Your colleague does not have the full picture. The decision on whether the dog can board is not yours or theirs to make — it belongs to the zone leader and bridge. Continue to the assembly station."
+      },
+      {
+        text: "Bring your colleague with you to speak to the zone leader together",
+        correct: true,
+        feedback: "Bringing your colleague to the zone leader means everyone gets clarity at the same time and avoids any further disagreement. The zone leader can confirm the correct procedure for both of you."
+      }
+    ]
+  },
+ {
+    scene: "You are at the life boat when a passenger refuses to board. They are visibly distressed and tell you they are terrified of dogs and will not get into the boat with one.",
+    question: "What do you do?",
+    choices: [
+      {
+        text: "Tell the dog owner they will have to leave the dog behind so the other passenger can board",
+        correct: false,
+        feedback: "The bridge has confirmed the dog can board — that decision is not yours to reverse. Your priority is to get both passengers onto the boat and escalate if needed."
+      },
+      {
+        text: "Acknowledge the passenger's fear, reassure them, and ask the dog owner to keep the dog as far from them as possible inside the boat",
+        correct: true,
+        feedback: "A calm, practical response. Acknowledging the fear and creating distance between the two passengers is a reasonable solution that keeps the evacuation moving."
+      },
+      {
+        text: "Escalate to your zone leader and ask them to place the frightened passenger in a different life boat",
+        correct: true,
+        feedback: "If there is capacity in another boat and time allows, this is a reasonable escalation. Your zone leader can make that call — flagging it quickly is the right instinct."
+      },
+      {
+        text: "Leave the frightened passenger on the deck and focus on boarding the others",
+        correct: false,
+        feedback: "No passenger should be left behind. This situation needs to be resolved — reassure them, find a practical solution, and escalate if needed."
       }
     ]
   }
@@ -521,6 +567,8 @@ function renderSummary(content) {
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
+    <div class="reminder-card">
+  <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
     <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
