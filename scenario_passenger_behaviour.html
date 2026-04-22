@@ -310,6 +310,26 @@
     margin-bottom: 1.5rem;
   }
 
+ .reminder-card {
+    background: #f0f4ff;
+    border: 1px solid #c0cdf0;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: #3a4a7a;
+    line-height: 1.6;
+  }
+
+  .reminder-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6070b0;
+    margin-bottom: 4px;
+  }
+
   .review-list {
     background: white;
     border-radius: 14px;
@@ -521,6 +541,8 @@ function renderSummary(content) {
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
+    <div class="reminder-card">
+    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
     <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
