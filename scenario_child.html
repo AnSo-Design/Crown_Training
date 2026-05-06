@@ -676,7 +676,7 @@ function render() {
   const content = document.getElementById('content');
   const switcher = document.getElementById('lang-switcher');
 
-  switcher.style.display = 'flex';
+  switcher.style.display = 'none';
   updateLangButtons();
 
   if (current <= -1) { renderIntro(content); return; }
@@ -813,7 +813,7 @@ function startScenario() {
   current = 0;
   selected = null;
   results = [];
-  document.getElementById('lang-switcher').style.display = 'flex';
+
   // Deep copy and shuffle choices for current language
   shuffledSteps = t[lang].steps.map(step => ({
     ...step,
