@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Passenger evacuating with luggage</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,89 +410,203 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "While evacuating cabins, you knock on a door and open it. A woman is packing her things into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
-    question: "What is your first response?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Passenger evacuating with luggage",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — excellent work." : s >= 2 ? "Good. Review the situations you missed before the next drill." : "Go through this scenario with your zone leader at the debrief.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "A passenger refuses to leave without her belongings",
+    introDesc: "It is early in the evacuation. You are sweeping your designated zone. You open a cabin door and find a passenger packing a suitcase. She does not want to leave without her things.",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Tell her firmly that she must leave immediately and that she cannot bring her luggage",
-        correct: false,
-        feedback: "Starting with a flat refusal and a command is likely to make her dig in further. She is panicing and scared — a confrontational approach may cost you more time than a calm one. Lead with the key information and a calm response."
+        scene: "While evacuating cabins, you knock on a door and open it. A woman is packing her things into a large suitcase. She looks up and says: 'I just need five more minutes to pack. I'm not leaving without my things.'",
+        question: "What is your first response?",
+        choices: [
+          { text: "Tell her firmly that she must leave immediately and that she cannot bring her luggage.", correct: false, feedback: "Starting with a flat refusal and a command is likely to make her dig in further. She is panicking and scared — a confrontational approach may cost you more time than a calm one. Lead with clear information and a calm tone." },
+          { text: "Wait by the door and give her two minutes — it is early in the evacuation and there is no immediate rush.", correct: false, feedback: "Even though it is early in the evacuation, waiting is not the right move. Every cabin takes time and you have a large area to sweep. You also cannot know how quickly the situation on the ship may change. Keep things moving." },
+          { text: "Step into the cabin, speak calmly, and tell her she needs to come now — she can bring warm clothes and good shoes, but not a suitcase.", correct: true, feedback: "You are giving her clear, specific information rather than a flat refusal. Staying calm also helps — she is likely frightened, and your tone sets the mood in the cabin." }
+        ]
       },
       {
-        text: "Wait by the door and give her two minutes — it is early in the evacuation and there is no immediate rush",
-        correct: false,
-        feedback: "Even though it is early in the evacuation, waiting is not the right move. Every cabin takes time and you have a large area to sweep. You also cannot know how quickly the situation on the ship may change. Keep things moving."
+        scene: "The passenger has stopped packing. But she has now zipped up a large suitcase and is pulling it toward the door. She says: 'I'm ready. Let's go.' She expects to bring the suitcase with her.",
+        question: "What do you do?",
+        choices: [
+          { text: "Let her bring the suitcase — she is ready to move and that is what matters.", correct: false, feedback: "A large suitcase during an evacuation is a genuine hazard. You already told her she could not bring a suitcase — allowing it now undermines that and sets a precedent for other passengers who may be watching." },
+          { text: "Firmly tell her the suitcase stays — explain it is a safety hazard in the corridors and on the stairs.", correct: true, feedback: "You are being firm but giving her a reason, not just a rule." },
+          { text: "Ignore the suitcase and focus on getting her out of the cabin — the zone leader can deal with it later.", correct: false, feedback: "Once she is in the corridor with the suitcase it becomes much harder to take it from her. Address it now, before she leaves the cabin, when it is easiest to manage." }
+        ]
       },
       {
-        text: "Step into the cabin, speak calmly, and tell her she needs to come now — she can bring warm clothes and good shoes, but not a suitcase",
-        correct: true,
-        feedback: "You are giving her clear, specific information rather than a flat refusal. Staying calm also helps — she is likely frightened, and your tone sets the mood in the cabin."
+        scene: "She is frustrated but has agreed to leave the suitcase. She is already holding her handbag and looks at you. 'I have my passport and phone in here — can I at least take this?'",
+        question: "What do you do?",
+        choices: [
+          { text: "Tell her she cannot bring anything at all and she must leave right now.", correct: false, feedback: "The guidance is that passengers should only bring warm clothes and suitable shoes. However, refusing again risks another confrontation and more delay. Pick your battles." },
+          { text: "Tell her the small bag is fine and move her out of the cabin immediately.", correct: true, feedback: "A small shoulder bag with a passport and phone is not a hazard, and the confrontation over the suitcase has already cost time. The zone leader can handle any further issues at the assembly station." },
+          { text: "Ask her to follow you to the assembly station where she can ask the zone leader whether the bag is allowed.", correct: true, feedback: "This gets her moving, while also letting the zone leader manage a possibly complicated situation." }
+        ]
       }
     ]
   },
-  {
-    scene: "The passenger has stopped packing. But she has now zipped up a large suitcase and is pulling it toward the door. She says: 'I'm ready. Let's go.' She expects to bring the suitcase with her.",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Passager vil medbringe bagage under evakuering",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — godt gået." : s >= 2 ? "Godt. Kig de situationer du missede igennem inden næste øvelse." : "Tag dette scenarie med din zoneleder ved debriefingen.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "En passager vil ikke forlade kahytten uden sin baggage",
+    introDesc: "Det er tidligt i evakueringen. Du afsøger din zone. Du åbner en kahytsdør og finder en passager, der er ved at pakke en kuffert. Hun vil ikke gå uden sine ting.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Let her bring the suitcase — she is ready to move and that is what matters",
-        correct: false,
-        feedback: "A large suitcase during an evacuation is a genuine hazard. You already told her she could not bring a suitcase — allowing it now undermines that and sets a precedent for other passengers who may be watching."
+        scene: "Du banker på og åbner en kahytsdør. En kvinde er ved at pakke sine ting ned i en stor kuffert. Hun ser op og siger: 'Jeg har bare brug for fem minutter mere. Jeg går ikke uden mine ting.'",
+        question: "Hvad er din første reaktion?",
+        choices: [
+          { text: "Sig bestemt til hende, at hun skal forlade rummet med det samme, og at hun ikke kan tage kufferten med.", correct: false, feedback: "Et blankt afslag og en ordre gør det sandsynligvis kun sværere, da hun er bange og i panik. Start med klar information og en rolig tone." },
+          { text: "Vent ved døren og giv hende to minutter — det er tidligt i evakueringen og der er ikke nogen akut fare endnu.", correct: false, feedback: "Selvom det er tidligt i evakueringen, kan du ikke vente. Hver kahyt tager tid, og du har et stort område at afsøge. Hun må heller ikke medbringe en kuffert under evakueringen." },
+          { text: "Træd ind i kahytten, tal roligt og sig, at hun skal med nu og hun må medbringe varmt tøj og gode sko, men ikke en kuffert.", correct: true, feedback: "Du giver hende konkret og specifik information i stedet for bare at sige nej. En rolig tone hjælper også — hun er sandsynligvis bange, og din stemning sætter tonen i kahytten." }
+        ]
       },
       {
-        text: "Firmly tell her the suitcase stays — explain it is a safety hazard in the corridors and on the stairs",
-        correct: true,
-        feedback: "You are being firm but giving her a reason, not just a rule."
+        scene: "Passageren er holdt op med at pakke. Men hun har nu lukket en stor kuffert og trækker den mod døren. Hun siger: 'Jeg er klar. Lad os gå.' Hun regner med at tage kufferten med.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Lad hende tage kufferten — hun er klar til at gå, og det er det vigtigste.", correct: false, feedback: "En stor kuffert under en evakuering er et reelt sikkerhedsproblem. Du har allerede sagt til hende, at hun ikke kan tage kufferten — tillader du det nu, underminerer det det og giver et dårligt signal til andre passagerer, der måske ser på." },
+          { text: "Sig bestemt til hende, at kufferten bliver — forklar at den er til fare for andre i korridorerne og på trapperne.", correct: true, feedback: "Du er fast, men du giver hende en grund, ikke bare en regel." },
+          { text: "Ignorer kufferten og fokuser på at få hende ud af kahytten. Zonelederen kan tage sig af det senere.", correct: false, feedback: "Når hun er ude i korridoren med kufferten, er det meget sværere at tage den fra hende. Tag hånd om situationen med det samme, inden hun forlader kahytten, mens det er nemmest at håndtere." }
+        ]
       },
       {
-        text: "Ignore the suitcase and focus on getting her out of the cabin — the zone leader can deal with it later",
-        correct: false,
-        feedback: "Once she is in the corridor with the suitcase it becomes much harder to take it from her. Address it now, before she leaves the cabin, when it is easiest to manage."
+        scene: "Hun er frustreret, men har accepteret at efterlade kufferten. Hun holder allerede sin håndtaske og ser på dig. 'Jeg har mit pas og telefon herinde — kan jeg i det mindste tage den med?'",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Sig til hende, at hun ikke kan tage noget som helst med, og at hun skal gå nu.", correct: false, feedback: "Retningslinjen er, at passagerer kun bør tage varmt tøj og egnede sko. Men at sige nej igen risikerer endnu en konfrontation og mere forsinkelse. Vælg dine kampe." },
+          { text: "Sig til hende, at den lille taske er i orden, og få hende ud af kahytten med det samme.", correct: true, feedback: "En lille skuldertaske med pas og telefon er ikke til fare, og diskussionen om kufferten har allerede kostet tid. Zonelederen kan tage sig af eventuelle yderligere problemer ved samlingsstationen." },
+          { text: "Bed hende følge med dig til samlingsstationen, hvor hun kan spørge zonelederen, om tasken er tilladt.", correct: true, feedback: "Det får hende i bevægelse, og lader samtidig zonelederen håndtere en mulig kompliceret situation." }
+        ]
       }
     ]
   },
-  {
-    scene: "She is frustrated but has agreed to leave the suitcase. She is already holding her handbag and looks at you. 'I have my passport and phone in here — can I at least take this?'",
-    question: "What do you do?",
-    choices: [
+
+  sv: {
+    barTitle: "Passagerare vill ta med bagage",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — utmärkt arbete." : s >= 2 ? "Bra. Gå igenom de situationer du missade inför nästa övning." : "Gå igenom det här scenariot med din zonledare vid debriefingen.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "En passagerare vägrar lämna utan sina tillhörigheter",
+    introDesc: "Det är tidigt i evakueringen. Du genomsöker din tilldelade zon. Du öppnar en hyttdörr och hittar en passagerare som packar en resväska. Hon vill inte lämna utan sina saker.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Tell her she cannot bring anything at all and she must leave right now",
-        correct: false,
-        feedback: "To de-escalate the situation, let her bring the small handbag. The guidance is that passengers should only bring warm clothes and suitable shoes. However, refusing again risks another confrontation and more delay. Pick your battles."
+        scene: "Du knackar och öppnar en hyttdörr. En kvinna packar ner sina saker i en stor resväska. Hon ser upp och säger: 'Jag behöver bara fem minuter till. Jag går inte utan mina saker.'",
+        question: "Vad är din första reaktion?",
+        choices: [
+          { text: "Säg bestämt till henne att hon måste gå omedelbart och att hon inte kan ta med resväskan.", correct: false, feedback: "Att börja med ett blankt avslag och en order gör det troligtvis bara svårare — hon är rädd och i panik. Ett konfrontativt sätt kan kosta dig mer tid än ett lugnt. Börja med tydlig information och en lugn ton." },
+          { text: "Vänta vid dörren och ge henne två minuter — det är tidigt i evakueringen och det är ingen omedelbar fara.", correct: false, feedback: "Även om det är tidigt i evakueringen är det inte rätt att vänta. Varje hytt tar tid och du har ett stort område att genomsöka. Du vet heller inte hur snabbt situationen ombord kan förändras. Håll saker och ting i rörelse." },
+          { text: "Gå in i hytten, tala lugnt och säg att hon måste följa med nu — hon kan ta varma kläder och bra skor, men inte en resväska.", correct: true, feedback: "Du ger henne konkret och specifik information i stället för bara ett nej. Att hålla dig lugn hjälper också — hon är troligtvis rädd och din ton sätter stämningen i hytten." }
+        ]
       },
       {
-        text: "Tell her the small bag is fine and move her out of the cabin immediately",
-        correct: true,
-        feedback: "A small shoulder bag with a passport and phone is not a hazard and the confrontation over the suitcase has already cost time. The zone leader can handle any further issues at the muster station."
+        scene: "Passageraren har slutat packa. Men hon har nu stängt en stor resväska och drar den mot dörren. Hon säger: 'Jag är redo. Nu går vi.' Hon förväntar sig att få ta resväskan med.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Låt henne ta resväskan — hon är redo att gå och det är det viktigaste.", correct: false, feedback: "En stor resväska under en evakuering är ett verkligt säkerhetsproblem. Du har redan sagt att hon inte kan ta resväskan — tillåter du det nu underminerar det det och sätter ett dåligt exempel för andra passagerare som kanske ser på." },
+          { text: "Säg bestämt till henne att resväskan stannar — förklara att den är en säkerhetsrisk i korridorerna och i trapporna.", correct: true, feedback: "Du är bestämd men ger henne en anledning — inte bara en regel." },
+          { text: "Ignorera resväskan och fokusera på att få ut henne ur hytten — zonledaren kan ta hand om det senare.", correct: false, feedback: "När hon väl är ute i korridoren med resväskan är det mycket svårare att ta den ifrån henne. Ta tag i det nu, innan hon lämnar hytten, när det är lättast att hantera." }
+        ]
       },
       {
-        text: "Ask her follow you to the muster station where she can ask the zone leader whether the bag is allowed",
-        correct: true,
-        feedback: "This gets her moving, while also letting the zone leader manage a possibly complicated situation."
+        scene: "Hon är frustrerad men har gått med på att lämna resväskan. Hon håller redan sin handväska och ser på dig. 'Jag har mitt pass och min telefon i den här — kan jag åtminstone ta den med?'",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Säg till henne att hon inte kan ta med sig någonting alls och att hon måste gå nu.", correct: false, feedback: "Riktlinjen är att passagerare bara bör ta varma kläder och lämpliga skor. Men att säga nej igen riskerar ytterligare en konfrontation och mer försening. Välj dina strider." },
+          { text: "Säg till henne att den lilla väskan är okej och få ut henne ur hytten omedelbart.", correct: true, feedback: "En liten axelväska med pass och telefon är ingen säkerhetsrisk, och diskussionen om resväskan har redan kostat tid. Zonledaren kan hantera eventuella ytterligare problem vid samlingsplatsen." },
+          { text: "Be henne följa med dig till samlingsplatsen där hon kan fråga zonledaren om väskan är tillåten.", correct: true, feedback: "Det får henne i rörelse och låter samtidigt zonledaren hantera en eventuellt komplicerad situation." }
+        ]
       }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
   const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -501,16 +626,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -520,57 +647,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Passenger evacuating with luggage';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A passenger refuses to leave without her belongings</div>
-      <div class="intro-desc">It is early in the evacuation. You are sweeping your designated zone. You open a cabin door and find a passenger packing a suitcase. She does not want to leave without her things.</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~4 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — excellent work.';
-  else if (score >= 2) msg = 'Good. Review the situations you missed before the next drill.';
-  else msg = 'Go through this scenario with your zone leader at the debrief.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -578,19 +718,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
