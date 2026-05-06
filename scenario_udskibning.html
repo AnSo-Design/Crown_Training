@@ -226,6 +226,35 @@
 
   .next-btn:active { background: #a0291e; }
 
+  .lang-switcher-inline {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.25rem;
+  }
+
+  .lang-switcher-inline .lang-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .lang-switcher-inline .lang-btn.active {
+    background: #f0f0ee;
+    border-color: #888;
+    color: #222;
+  }
+
+  .lang-switcher-inline .lang-btn:active { background: #e8e8e6; }
+
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
   .intro-badge {
@@ -397,7 +426,7 @@
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
   <div class="title" id="bar-title"></div>
-  <div class="lang-switcher">
+  <div class="lang-switcher" id="lang-switcher">
     <button class="lang-btn" onclick="switchLang('en')">EN</button>
     <button class="lang-btn" onclick="switchLang('da')">DA</button>
     <button class="lang-btn" onclick="switchLang('sv')">SV</button>
@@ -595,6 +624,7 @@ function updateLangButtons() {
 function render() {
   const content = document.getElementById('content');
   updateLangButtons();
+  document.getElementById('lang-switcher').style.display = 'none';
 
   if (current <= -1) { renderIntro(content); return; }
 
@@ -648,6 +678,7 @@ function renderIntro(content) {
   setProgress(0);
   const T = t[lang];
   document.getElementById('bar-title').textContent = T.barTitle;
+  document.getElementById('lang-switcher').style.display = 'none';
   content.innerHTML = `
     <div class="intro-wrap">
       <div class="intro-badge">${T.introBadge}</div>
@@ -664,6 +695,11 @@ function renderIntro(content) {
         </div>
       </div>
       <button class="start-btn" onclick="startScenario()">${T.start}</button>
+      <div class="lang-switcher-inline">
+        <button class="lang-btn ${lang==='en'?'active':''}" onclick="switchLang('en')">EN</button>
+        <button class="lang-btn ${lang==='da'?'active':''}" onclick="switchLang('da')">DA</button>
+        <button class="lang-btn ${lang==='sv'?'active':''}" onclick="switchLang('sv')">SV</button>
+      </div>
     </div>`;
 }
 
@@ -694,6 +730,12 @@ function renderSummary(content) {
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
     <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+
+  // ── Send completion to Nordic Crew app ──
+  const scenarioId = 'scenario_udskibning';
+  setTimeout(() => {
+    window.location.href = `https://ansodesign.lovable.app/progress?completed=${scenarioId}&score=${score}&total=${total}`;
+  }, 4000);
 }
 
 function switchLang(l) {
