@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Human responses in an emergency</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,68 +410,176 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "The evacuation alarm has sounded. You are moving passengers toward the muster station. Most are following instructions calmly, but one woman is standing completely still in the corridor, staring at the wall. She does not respond when you speak to her. She is not injured — she is frozen.",
-    question: "What do you do?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Human responses in an emergency",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — if this happens on board, you are ready." : s >= 1 ? "Good. Review the situation you missed before your next drill." : "Worth revisiting — understanding passenger behaviour helps you respond faster and more effectively.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "Not all passengers react the same way in an emergency",
+    introDesc: "Research shows that passengers respond to emergencies in very different ways — from calm and self-directed to completely paralysed. Recognising which type of passenger you are dealing with determines how you respond.",
+    situations: "Situations",
+    duration: "~3 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Leave her and continue — she will follow once she sees others moving",
-        correct: false,
-        feedback: "A passenger who is completely frozen and unresponsive is unlikely to follow on her own. Around 12–14% of people in an emergency become paralysed by fear and cannot act without direct help."
+        scene: "The evacuation alarm has sounded. You are moving passengers toward the assembly station. Most are following instructions calmly, but one woman is standing completely still in the corridor, staring at the wall. She does not respond when you speak to her. She is not injured — she is frozen.",
+        question: "What do you do?",
+        choices: [
+          { text: "Leave her and continue — she will follow once she sees others moving.", correct: false, feedback: "A passenger who is completely frozen and unresponsive is unlikely to follow on her own. Around 12–14% of people in an emergency become paralysed by fear and cannot act without direct help." },
+          { text: "Take her gently but firmly by the arm, make eye contact, speak calmly and clearly, and guide her physically toward the assembly station.", correct: true, feedback: "Around 12–14% of passengers in an emergency become paralysed by fear and need direct physical guidance to move. Stay calm, make eye contact, speak clearly and guide her with physical contact." },
+          { text: "Raise your voice and repeat the instruction to move — she may just need a stronger signal.", correct: false, feedback: "Raising your voice is unlikely to work. The roughly 12–14% of passengers who freeze in an emergency cannot process instructions on their own — what they need is direct physical presence and calm guidance, not a louder command." }
+        ]
       },
       {
-        text: "Take her gently but firmly by the arm, make eye contact, speak calmly and clearly, and guide her physically toward the muster station",
-        correct: true,
-        feedback: "Around 12–14% of passengers in an emergency become paralysed by fear and need direct physical guidance to move. Stay calm, make eye contact, speak clearly and guide her with physical contact."
-      },
-      {
-        text: "Raise your voice and repeat the instruction to move — she may just need a stronger signal",
-        correct: false,
-        feedback: "Raising your voice is unlikely to work. The roughly 12–14% of passengers who freeze in an emergency cannot process instructions on their own in that state — what they need is direct physical presence and calm guidance, not a louder command."
+        scene: "You are moving passengers toward the assembly station when you notice a man standing at the top of a stairwell directing people down a different route than the official one. Several passengers are already following him. He is calm and confident and says: 'This way is faster.'",
+        question: "What do you do?",
+        choices: [
+          { text: "Let him continue — he seems to know what he is doing and passengers are following calmly.", correct: false, feedback: "Around 5% of people in an emergency take initiative and try to help — but an unofficial route creates real risks. Passengers may miss their assembly station or block official routes. Redirect them now." },
+          { text: "Approach him calmly, thank him for trying to help, but tell him clearly that everyone must follow the crew's guidance and guide the group back.", correct: true, feedback: "Around 5% of passengers will take independent action in an emergency. Acknowledge his intention, be firm about the official route, and redirect the group calmly." },
+          { text: "Shout across to the group to stop and come back — the man is giving wrong directions.", correct: false, feedback: "Shouting contradicting instructions creates confusion and may cause panic. Approach him directly, speak calmly and firmly, and redirect the group without drawing attention to the conflict." }
+        ]
       }
     ]
   },
-  {
-    scene: "You are moving passengers toward the muster station when you notice a man standing at the top of a stairwell directing people down a different route than the official one. Several passengers are already following him. He is calm and confident and says: “This way is faster, I know this ship.”",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Menneskelige reaktioner i en nødsituation",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — hvis det sker om bord, er du klar." : s >= 1 ? "Godt. Kig den situation du missede igennem inden næste øvelse." : "Tag det her med igen — forståelse af passagerreaktioner gør dig hurtigere og mere effektiv.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "Ikke alle passagerer reagerer ens i en nødsituation",
+    introDesc: "Forskning viser, at passagerer reagerer meget forskelligt under en nødsituation — fra rolige og selvstændige til fuldstændig handlingslammede. At genkende hvilken type passager du har med at gøre, afgør hvordan du handler.",
+    situations: "Situationer",
+    duration: "~3 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Let him continue — he seems to know what he is doing and passengers are following calmly",
-        correct: false,
-        feedback: "Around 5% of people in an emergency take initiative and try to help — but an unofficial route creates real risks. Passengers may miss their muster station or block official routes. Redirect them now."
+        scene: "Evakueringsalarmen er gået. Du leder passagerer mod samlingsstationen. De fleste følger med roligt, men en kvinde står helt stille i korridoren og stirrer på væggen. Hun reagerer ikke, når du taler til hende. Hun er ikke kommet til skade, men kan ikke bevæge sig.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Lad hende stå og fortsæt — hun følger nok med, når hun ser de andre gå.", correct: false, feedback: "En passager der er fuldstændig handlingslammet reagerer sandsynligvis ikke på at se andre gå. Omkring 12–14% af mennesker i en nødsituation fryser af frygt og kan ikke handle uden direkte hjælp." },
+          { text: "Tag blidt men bestemt fat i hendes arm, søg øjenkontakt, tal roligt og tydeligt og led hende fysisk mod samlingsstationen.", correct: true, feedback: "Omkring 12–14% af passagerer i en nødsituation fryser af frygt og har brug for direkte fysisk vejledning for at komme i gang. Bevar roen, søg øjenkontakt, tal tydeligt og guide hende med fysisk kontakt." },
+          { text: "Hæv stemmen og gentag instruktionen om at gå — hun har måske bare brug for et stærkere signal.", correct: false, feedback: "Det hjælper sandsynligvis ikke at hæve stemmen. De ca. 12–14% der fryser i en nødsituation kan ikke behandle instruktioner på egen hånd — de har brug for direkte fysisk tilstedeværelse og rolig vejledning, ikke en højere kommando." }
+        ]
       },
       {
-        text: "Approach him calmly, thank him for trying to help, but tell him clearly that everyone must follow the official route and guide the group back",
-        correct: true,
-        feedback: "Around 5% of passengers will take independent action in an emergency. Acknowledge his intention, be firm about the official route, and redirect the group calmly. Other passengers are watching how you handle this."
+        scene: "Du leder passagerer mod samlingsstationen, da du bemærker en mand øverst på en trappe, der dirigerer folk ned ad en anden rute end den officielle. Flere passagerer følger allerede efter ham. Han er rolig og selvsikker og siger: 'Den her vej er hurtigere.'",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Lad ham fortsætte — han virker til at vide, hvad han gør, og passagererne følger roligt med.", correct: false, feedback: "Omkring 5% af mennesker i en nødsituation tager initiativ og forsøger at hjælpe — men en uofficiel rute skaber reelle risici. Passagerer kan misse samlingsstationen eller blokere de officielle ruter. Omdiriger dem nu." },
+          { text: "Gå roligt hen til ham, tak ham for at ville hjælpe, men sig klart og tydeligt, at alle skal følge besætningens vejledning, og led gruppen tilbage.", correct: true, feedback: "Omkring 5% af passagerer handler selvstændigt i en nødsituation. Anerkend hans intention, vær fast på den officielle rute og omdiriger gruppen roligt." },
+          { text: "Råb over til gruppen om at stoppe og vende om — manden giver forkerte instruktioner.", correct: false, feedback: "At råbe modstridende instruktioner skaber forvirring og kan udløse panik. Gå direkte hen til ham, tal roligt og bestemt og omdiriger gruppen uden at oppuste konflikten." }
+        ]
+      }
+    ]
+  },
+
+  sv: {
+    barTitle: "Mänskliga reaktioner i en nödsituation",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — om det händer ombord är du redo." : s >= 1 ? "Bra. Gå igenom situationen du missade inför nästa övning." : "Värt att gå igenom igen — att förstå passagerarreaktioner gör dig snabbare och mer effektiv.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "Inte alla passagerare reagerar likadant i en nödsituation",
+    introDesc: "Forskning visar att passagerare reagerar mycket olika under en nödsituation — från lugna och självständiga till helt handlingsförlamade. Att känna igen vilken typ av passagerare du har att göra med avgör hur du agerar.",
+    situations: "Situationer",
+    duration: "~3 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
+      {
+        scene: "Evakueringslarmet har gått. Du leder passagerare mot samlingsplatsen. De flesta följer lugnt med, men en kvinna står helt stilla i korridoren och stirrar på väggen. Hon reagerar inte när du pratar med henne. Hon är inte skadad — hon är frusen.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Lämna henne och fortsätt — hon följer nog med när hon ser de andra gå.", correct: false, feedback: "En passagerare som är helt handlingsförlamad kommer troligtvis inte att följa med på egen hand. Ungefär 12–14% av människor i en nödsituation fryser av rädsla och kan inte agera utan direkt hjälp." },
+          { text: "Ta ett mjukt men bestämt grepp om hennes arm, ta ögonkontakt, tala lugnt och tydligt och led henne fysiskt mot samlingsplatsen.", correct: true, feedback: "Ungefär 12–14% av passagerare i en nödsituation fryser av rädsla och behöver direkt fysisk vägledning för att komma igång. Behåll lugnet, ta ögonkontakt, tala tydligt och vägled henne med fysisk kontakt." },
+          { text: "Höj rösten och upprepa instruktionen att gå — hon kanske bara behöver en tydligare signal.", correct: false, feedback: "Att höja rösten hjälper troligtvis inte. De ungefär 12–14% som fryser i en nödsituation kan inte ta till sig instruktioner på egen hand — de behöver direkt fysisk närvaro och lugn vägledning, inte en högre order." }
+        ]
       },
       {
-        text: "Shout across to the group to stop and come back — the man is giving wrong directions",
-        correct: false,
-        feedback: "Shouting contradicting instructions creates confusion and may cause panic. Approach him directly, speak calmly and firmly, and redirect the group without drawing attention to the conflict."
+        scene: "Du leder passagerare mot samlingsplatsen när du märker att en man längst upp i ett trapphus dirigerar folk ner längs en annan väg än den officiella. Flera passagerare följer redan efter honom. Han är lugn och säker och säger: 'Den här vägen är snabbare.'",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Låt honom fortsätta — han verkar veta vad han gör och passagerarna följer lugnt med.", correct: false, feedback: "Ungefär 5% av människor i en nödsituation tar initiativ och försöker hjälpa — men en inofficiell väg skapar verkliga risker. Passagerare kan missa samlingsplatsen eller blockera officiella vägar. Omdirigera dem nu." },
+          { text: "Gå lugnt fram till honom, tacka honom för att han försöker hjälpa, men säg tydligt att alla måste följa den officiella vägen och led gruppen tillbaka.", correct: true, feedback: "Ungefär 5% av passagerare agerar självständigt i en nödsituation. Bekräfta hans intention, var bestämd om den officiella vägen och omdirigera gruppen lugnt." },
+          { text: "Ropa till gruppen att stanna och vända om — mannen ger fel instruktioner.", correct: false, feedback: "Att ropa motstridiga instruktioner skapar förvirring och kan utlösa panik. Gå direkt fram till honom, tala lugnt och bestämt och omdirigera gruppen utan att göra konflikten till ett stort nummer." }
+        ]
       }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
-  const letters = ['A','B','C'];
+  const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -480,16 +599,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -499,57 +620,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Human responses in an emergency';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">Not all passengers react the same way in an emergency</div>
-      <div class="intro-desc">Research shows that passengers respond to emergencies in very different ways — from calm and self-directed to completely paralysed. Recognising which type of passenger you are dealing with determines how you respond.</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">2</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~3 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — if this happens on board, you are ready.';
-  else if (score >= 1) msg = 'Good. Review the situation you missed before your next drill.';
-  else msg = 'Worth revisiting — understanding passenger behaviour helps you respond faster and more effectively.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -557,19 +691,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
