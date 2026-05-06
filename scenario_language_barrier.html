@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Language Barrier: Communicating without words</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,89 +410,203 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "The evacuation alarm is sounding. You find a couple in a corridor looking around frantically. They are gesturing and speaking to each other and the language barrier means you can't understand them and vice verca.",
-    question: "What do you do?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Language barrier",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — if this happens on board, you are ready." : s >= 2 ? "Good. Review the situation you missed before your next drill." : "Worth revisiting — communication without shared language is one of the most challenging parts of an evacuation.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "A language barrier during evacuation",
+    introDesc: "During the evacuation you encounter passengers you cannot communicate with verbally due to different languages. How you respond matters.",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Speak slowly and clearly in English, repeating the instructions until they understand",
-        correct: false,
-        feedback: "Speaking slowly or loudly does not help when there is no shared language. You need a different approach entirely — use your body, not your words."
+        scene: "The evacuation alarm has sounded. You find a couple in a corridor looking around frantically. They are gesturing and speaking to each other and the language barrier means you can't understand them and vice versa.",
+        question: "What do you do?",
+        choices: [
+          { text: "Speak slowly and clearly in English, repeating the instructions until they understand.", correct: false, feedback: "Speaking slowly or loudly does not help when there is no shared language. You need a different approach entirely — use your body, not your words." },
+          { text: "Make direct eye contact, point firmly in the direction of the assembly station, and start walking while gesturing for them to follow.", correct: true, feedback: "When language fails, physical communication takes over. Point clearly, make eye contact, and lead the way with confidence. Most people will follow if you move with purpose." },
+          { text: "Find someone who speaks their language before doing anything else.", correct: false, feedback: "There is no time to search for a translator. Use gestures, eye contact and physical presence to get them moving immediately — a translator can help later." }
+        ]
       },
       {
-        text: "Make direct eye contact, point firmly in the direction of the muster station, and start walking while gesturing for them to follow",
-        correct: true,
-        feedback: "When language fails, physical communication takes over. Point clearly, make eye contact, and lead the way with confidence. Most people will follow if you move with purpose."
+        scene: "The couple has reached the assembly station. You hand them both life jackets but they are holding them uncertainly, turning them around trying to figure out how to put them on. They look at you for help.",
+        question: "What do you do?",
+        choices: [
+          { text: "Point to the life jacket and then to their chest and hope they understand.", correct: false, feedback: "Vague pointing is not enough when the stakes are high. You need to demonstrate clearly by putting on your own life jacket step by step so they can follow each movement." },
+          { text: "Take your own life jacket and put it on slowly in front of them, step by step, so they can copy each movement.", correct: true, feedback: "Demonstration is your most effective tool when language fails. Go slowly, make each step obvious, and check that they are copying correctly before moving to the next step." },
+          { text: "Ask another passenger nearby if they speak the same language.", correct: false, feedback: "Looking for a translator takes time you may not have. Demonstrate the life jacket yourself — a clear physical demonstration works across any language barrier." }
+        ]
       },
       {
-        text: "Find someone who speaks their language before doing anything else",
-        correct: false,
-        feedback: "There is no time to search for a translator. Use gestures, eye contact and physical presence to get them moving immediately — a translator can help later."
+        scene: "The couple is at the assembly station but keeps looking around and taking steps away from the group. They are clearly trying to find their tour group. Every time you move away they start drifting again.",
+        question: "What do you do?",
+        choices: [
+          { text: "Let them look — they will come back when they cannot find their group.", correct: false, feedback: "Passengers who drift from the assembly station during an evacuation are a serious risk. They may end up in the wrong place, delay boarding, or cause others to follow." },
+          { text: "Stand close to them, make eye contact, and use a clear firm gesture — open palm facing them — to signal stay. Repeat calmly every time they try to move.", correct: true, feedback: "A clear repeated stay gesture combined with calm eye contact is effective even without shared language. Stay physically close so they feel anchored. Your presence communicates that moving is not an option right now." },
+          { text: "Raise your voice and point firmly back to their position every time they move.", correct: false, feedback: "Raising your voice may increase their anxiety and make them more likely to look for their group. Keep your tone and body language calm — firmness without aggression is more effective." }
+        ]
       }
     ]
   },
-  {
-    scene: "The couple has reached the muster station. You hand them both life jackets but they are holding them uncertainly, turning them around trying to figure out how to put them on. They look at you for help.",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Sprogbarriere",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — hvis det sker om bord, er du klar." : s >= 2 ? "Godt. Kig den situation du missede igennem inden næste øvelse." : "Tag det her med igen — kommunikation uden fælles sprog er noget af det sværeste under en evakuering.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "Sprogbarriere under evakueringen",
+    introDesc: "Under evakueringen støder du på passagerer, du ikke kan kommunikere med verbalt. Hvordan du reagerer har stor betydning.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Point to the life jacket and then to their chest and hope they understand",
-        correct: false,
-        feedback: "Vague pointing is not enough when the stakes are high. You need to demonstrate clearly by putting on your own life jacket or mime the steps directly so they can follow each movement."
+        scene: "Evakueringsalarmen har lydt. Du finder et par i en korridor, der kigger forvirret rundt. De gestikulerer og taler med hinanden, men I forstår ikke hinanden.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Tal langsomt og tydeligt på engelsk og gentag instruktionerne, til de forstår.", correct: false, feedback: "Det hjælper ikke at tale langsomt eller højt, når der ikke er noget fælles sprog. Du er nødt til at bruge en helt anden tilgang som for eksempel kropssprog." },
+          { text: "Tag øjenkontakt, peg bestemt i retning af samlingsstationen og begynd at gå, mens du gestikulerer for dem at følge med.", correct: true, feedback: "Når sproget svigter, overtager kroppen. Peg tydeligt, søg øjenkontakt og gå forrest med ro og beslutsomhed — de fleste følger med, når du bevæger dig med sikkerhed." },
+          { text: "Find nogen, der taler deres sprog, inden du gør noget andet.", correct: false, feedback: "Der er ikke tid til at lede efter en tolk. Brug gestik, øjenkontakt og fysisk tilstedeværelse til at få dem i bevægelse med det samme — en tolk kan hjælpe senere." }
+        ]
       },
       {
-        text: "Take your own life jacket and put it on slowly in front of them, step by step, so they can copy each movement",
-        correct: true,
-        feedback: "Demonstration is your most effective tool when language fails. Go slowly, make each step obvious, and check that they are copying correctly before moving to the next step."
+        scene: "Parret er nået frem til samlingsstationen. Du rækker dem begge en redningsvest, men de holder den usikkert og vender den rundt for at finde ud af, hvordan den skal på. De ser på dig for hjælp.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Peg på redningsvesten og derefter på deres bryst og håb, at de forstår.", correct: false, feedback: "Vag gestikulering er ikke nok, når det virkelig gælder. Du er nødt til at demonstrere tydeligt — tag din egen vest på trin for trin, så de kan følge hvert enkelt bevægelse." },
+          { text: "Tag din egen redningsvest og put den langsomt på foran dem, trin for trin, så de kan efterligne hver bevægelse.", correct: true, feedback: "Demonstration er dit mest effektive redskab, når sproget svigter. Gør hvert trin tydeligt og tjek, at de tager den rigtigt på, inden du går videre." },
+          { text: "Spørg en passager i nærheden, om de taler samme sprog.", correct: false, feedback: "At lede efter en tolk tager tid, du måske ikke har. Demonstrér vesten selv — en tydelig fysisk demonstration virker på tværs af enhver sprogbarriere." }
+        ]
       },
       {
-        text: "Ask another passenger nearby if they speak the same language",
-        correct: false,
-        feedback: "Looking for a translator takes time you may not have. Demonstrate the life jacket yourself — a clear physical demonstration works across any language barrier."
+        scene: "Parret er ved samlingsstationen, men bliver ved med at kigge rundt og tage skridt væk fra gruppen. De leder tydeligvis efter deres rejsegruppe. Hver gang du bevæger dig væk, begynder de at bevæge sig væk igen.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Lad dem lede — de kommer tilbage, når de ikke finder deres gruppe.", correct: false, feedback: "Passagerer der forsvinder fra samlingsstationen under en evakuering er et alvorligt problem. De kan ende det forkerte sted, forsinke evakueringen eller få andre til at følge efter." },
+          { text: "Stå tæt på dem, tag øjenkontakt og brug en tydelig, rolig gestik — åben håndflade vendt mod dem — for at signalere: bliv her. Gentag roligt, hver gang de prøver at bevæge sig.", correct: true, feedback: "En tydelig, gentagen 'bliv'-gestik kombineret med øjenkontakt virker, selv uden fælles sprog. Hold dig fysisk tæt på, så de føler sig forankret. Din tilstedeværelse kommunikerer, at det ikke er en mulighed at gå." },
+          { text: "Hæv stemmen og peg bestemt tilbage til deres plads, hver gang de bevæger sig.", correct: false, feedback: "At hæve stemmen kan gøre dem mere urolige og øge lysten til at lede efter gruppen. Hold tone og kropssprog roligt — beslutsomhed uden aggression virker bedre." }
+        ]
       }
     ]
   },
-  {
-    scene: "The couple is at the muster station but keeps looking around and taking steps away from the group. They are clearly trying to find their tour group. Every time you move away they start drifting again.",
-    question: "What do you do?",
-    choices: [
+
+  sv: {
+    barTitle: "Språkbarriär",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — om det händer ombord är du redo." : s >= 2 ? "Bra. Gå igenom situationen du missade inför nästa övning." : "Värt att gå igenom igen — kommunikation utan gemensamt språk är en av de svåraste delarna av en evakuering.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "Ett par talar varken engelska eller danska",
+    introDesc: "Under evakueringen stöter du på passagerare du inte kan kommunicera med verbalt. Hur du reagerar de närmaste sekunderna spelar roll.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Let them look — they will come back when they cannot find their group",
-        correct: false,
-        feedback: "Passengers who drift from the muster station during an evacuation are a serious risk. They may end up in the wrong place, delay boarding, or cause others to follow."
+        scene: "Evakueringslarmet ljuder. Du hittar ett par i en korridor som ser sig förvirrat omkring. De gestikulerar och talar med varandra men ni förstår inte varandra.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Tala långsamt och tydligt på engelska och upprepa instruktionerna tills de förstår.", correct: false, feedback: "Det hjälper inte att tala långsamt eller högt när det inte finns något gemensamt språk. Du behöver ett helt annat tillvägagångssätt — använd kroppen, inte orden." },
+          { text: "Ta ögonkontakt, peka bestämt mot samlingsplatsen och börja gå medan du gestikulerar åt dem att följa med.", correct: true, feedback: "När språket sviktar tar kroppen över. Peka tydligt, ta ögonkontakt och gå före med lugn och beslutsamhet — de flesta följer med när du rör dig med säkerhet." },
+          { text: "Hitta någon som talar deras språk innan du gör något annat.", correct: false, feedback: "Det finns ingen tid att leta efter en tolk. Använd gester, ögonkontakt och fysisk närvaro för att få dem i rörelse omedelbart — en tolk kan hjälpa senare." }
+        ]
       },
       {
-        text: "Stand close to them, make eye contact, and use a clear firm gesture — open palm facing them — to signal stay. Repeat calmly every time they try to move",
-        correct: true,
-        feedback: "A clear repeated stay gesture combined with calm eye contact is effective even without shared language. Stay physically close so they feel anchored. Your presence communicates that moving is not an option right now."
+        scene: "Paret har nått samlingsplatsen. Du ger dem varsin flytväst men de håller i dem osäkert och vänder på dem för att försöka lista ut hur de ska ta på dem. De ser på dig för hjälp.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Peka på flytvästen och sedan mot deras bröst och hoppas att de förstår.", correct: false, feedback: "Vag pekande räcker inte när det verkligen gäller. Du behöver visa tydligt — ta på din egen väst steg för steg så att de kan följa varje rörelse." },
+          { text: "Ta din egen flytväst och ta på den långsamt framför dem, steg för steg, så de kan kopiera varje rörelse.", correct: true, feedback: "Demonstration är ditt mest effektiva verktyg när språket sviktar. Gå långsamt, gör varje steg tydligt och kontrollera att de kopierar rätt innan du går vidare." },
+          { text: "Fråga en passagerare i närheten om de talar samma språk.", correct: false, feedback: "Att leta efter en tolk tar tid du kanske inte har. Visa västen själv — en tydlig fysisk demonstration fungerar oavsett språkbarriär." }
+        ]
       },
       {
-        text: "Raise your voice and point firmly back to their position every time they move",
-        correct: false,
-        feedback: "Raising your voice may increase their anxiety and make them more likely to look for their group. Keep your tone and body language calm — firmness without aggression is more effective."
+        scene: "Paret är vid samlingsplatsen men håller på att se sig om och ta steg bort från gruppen. De letar tydligt efter sin resegrupp. Varje gång du rör dig bort börjar de driva igen.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Låt dem leta — de kommer tillbaka när de inte hittar sin grupp.", correct: false, feedback: "Passagerare som försvinner från samlingsplatsen under en evakuering är ett allvarligt problem. De kan hamna på fel ställe, fördröja ombordstigning eller få andra att följa efter." },
+          { text: "Stå nära dem, ta ögonkontakt och använd en tydlig, lugn gest — öppen handflata vänd mot dem — för att signalera stanna. Upprepa lugnt varje gång de försöker röra sig.", correct: true, feedback: "En tydlig, upprepad stanna-gest kombinerad med lugn ögonkontakt är effektiv även utan gemensamt språk. Håll dig fysiskt nära så att de känner sig förankrade. Din närvaro kommunicerar att det inte är ett alternativ att gå." },
+          { text: "Höj rösten och peka bestämt tillbaka till deras plats varje gång de rör sig.", correct: false, feedback: "Att höja rösten kan öka deras oro och göra dem mer benägna att leta efter sin grupp. Håll ton och kroppsspråk lugnt — beslutsamhet utan aggression är mer effektivt." }
+        ]
       }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
-  const letters = ['A','B','C'];
+  const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -501,16 +626,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -520,57 +647,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Language Barrier: Communicating without words';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A couple does not speak English or Danish</div>
-      <div class="intro-desc">During the evacuation you encounter passengers you cannot communicate with verbally. How you respond in the next few seconds matters.</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~4 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — if this happens on board, you are ready.';
-  else if (score >= 2) msg = 'Good. Review the situation you missed before your next drill.';
-  else msg = 'Worth revisiting — communication without shared language is one of the most challenging parts of an evacuation.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
-   <div class="reminder-card">
-   <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+    <div class="reminder-card">
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -578,19 +718,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
