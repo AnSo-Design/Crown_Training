@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Intoxicated Individual</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,84 +410,200 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "You knock and open a cabin door. A man in his 40s is sitting on the bed clearly intoxicated. The alarm is sounding. He looks up and says: 'It's fine, it's fine. I've been on this ship a hundred times.'",
-    question: "What is your first response?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Intoxicated passenger",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — excellent work." : s >= Math.ceil(t / 2) ? "Good. Review the situations you missed before the next drill." : "Go through this scenario with your zone leader or at a possible briefing.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "An intoxicated passenger refuses to leave their cabin",
+    introDesc: "You are sweeping cabins during an evacuation when you encounter a passenger who has been drinking and refuses to leave.",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Tell him you will come back for him once you have finished the rest of the sweep",
-        correct: false,
-        feedback: "You cannot guarantee you will have time to return, and an intoxicated passenger left alone during a real evacuation is a serious risk. "
+        scene: "You knock and open a cabin door. A man in his 40s is sitting on the bed, clearly intoxicated. He looks up and says: 'It's fine, it's fine. I've been on this ship a hundred times.'",
+        question: "What is your first response?",
+        choices: [
+          { text: "Tell him you will come back for him once you have finished the rest of the sweep.", correct: false, feedback: "You cannot guarantee you will have time to return, and an intoxicated passenger left alone during a real evacuation is a serious risk." },
+          { text: "Speak calmly, make eye contact, and tell him clearly that this is a real emergency and that you need him to come with you now.", correct: true, feedback: "Good. Staying calm and speaking directly gives him the clearest possible message without triggering a confrontation." },
+          { text: "Leave the cabin and continue your sweep — he is an adult and can decide for himself.", correct: false, feedback: "Leaving an intoxicated passenger who has refused to evacuate is not an option. You need to engage and resolve it, or escalate to your zone leader." }
+        ]
       },
       {
-        text: "Speak calmly, make eye contact, and tell him clearly that this is a real emergency and that you need him to come with you now",
-        correct: true,
-        feedback: "Good. Staying calm and speaking directly gives him the clearest possible message without triggering a confrontation."
+        scene: "He has stood up and is raising his voice, showing aggressive behaviour. He points at you and says: 'I told you I'm not going. Get out of my room.'",
+        question: "What do you do?",
+        choices: [
+          { text: "Step back, stay calm, and tell him you cannot leave without him and that you need him to come with you now.", correct: true, feedback: "At this point you have two valid options — attempt to de-escalate by stepping back and speaking calmly, or leave immediately and report to your zone leader. Both are acceptable responses to an aggressive passenger." },
+          { text: "Physically guide him out of the cabin. The situation is urgent and there is no more time for talking.", correct: false, feedback: "Physical contact with an aggressive intoxicated passenger is likely to escalate significantly and could put both of you at risk. Either try to de-escalate or report to your zone leader." },
+          { text: "Leave the cabin, find your zone leader immediately, and report the situation.", correct: true, feedback: "At this point you have two valid options — attempt to de-escalate by stepping back and speaking calmly, or leave immediately and report to your zone leader. Both are acceptable responses to an aggressive passenger." }
+        ]
       },
       {
-        text: "Leave the cabin and continue your sweep — he is an adult and can decide for himself",
-        correct: false,
-        feedback: "Leaving an intoxicated passenger who has refused to evacuate is not an option. You need to engage and resolve it, or escalate to your zone leader."
+        scene: "Your zone leader has called for assistance and two additional crew members have arrived to handle the passenger. They tell you the situation is under control and you can carry on your sweep.",
+        question: "What do you do?",
+        choices: [
+          { text: "Stay in the doorway in case they need backup.", correct: false, feedback: "The assistance has arrived and they are now responsible for the situation. Staying uses time you do not have — you still have cabins to sweep and other passengers who may need help." },
+          { text: "Continue your sweep immediately and report back to your zone leader once you have finished your assigned area.", correct: true, feedback: "The situation is in good hands — you have been given a clear instruction to carry on. The most useful thing you can do now is continue your sweep." }
+        ]
       }
     ]
   },
-  {
-    scene: "He has stood up and raising his voice showing violent behaviour. He points at you and says: 'I told you I'm not going. Get out of my room.'",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Beruset passager",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — godt gået." : s >= Math.ceil(t / 2) ? "Godt. Kig de situationer du missede igennem inden næste øvelse." : "Tag dette scenarie med din zoneleder eller på en briefing.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "En beruset passager nægter at forlade sin kahyt",
+    introDesc: "Du er ved at gennemgå kahytter under en evakuering, da du støder på en passager der har drukket og ikke vil gå med.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Step back, stay calm, and tell him you cannot leave without him and that you need him to come with you now",
-        correct: true,
-        feedback: "At this point you have two valid options — you can attempt to de-escalate by stepping back and speaking calmly, or you can leave immediately and report to your zone leader. Both are acceptable responses to an aggressive passenger."
+        scene: "Du banker på og åbner en kahytsdør. En mand i 40'erne sidder på sengen og er tydeligt beruset. Han ser op og siger: 'Det er fint, det er fint. Jeg har sejlet med hundrede gange før.'",
+        question: "Hvad er din første reaktion?",
+        choices: [
+          { text: "Fortæl ham, at du kommer tilbage, når du har gennemgået resten af kahytterne.", correct: false, feedback: "Du kan ikke garantere, at du når at vende tilbage, og en beruset passager, der er alene under en evakuering, kan være et alvorligt problem." },
+          { text: "Tal roligt, få øjenkontakt og sig klart og tydeligt, at dette er en nødsituation, og at han skal følge med dig nu.", correct: true, feedback: "Godt. En rolig og direkte tone giver ham det tydeligste signal uden at det eskalerer til en konfrontation." },
+          { text: "Forlad kahytten og fortsæt din afsøgning — han er voksen og kan bestemme selv.", correct: false, feedback: "I sådan en situation må du ikke gå fra en beruset passager, der nægter at evakuere. Du er nødt til at tage dig af det eller eskalere til zonelederen." }
+        ]
       },
       {
-        text: "Physically guide him out of the cabin. The situation is urgent and there is no more time for talking",
-        correct: false,
-        feedback: "Physical contact with an aggressive intoxicated passenger is likely to escalate the situation significantly and could put both of you at risk. Either try to de-escalate the situation or report to your zone leader."
+        scene: "Han rejser sig op, hæver stemmen og siger: 'Jeg sagde, jeg ikke går. Smut ud af mit værelse.'",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Tag et skridt tilbage, bevar roen og sig, at du ikke kan gå uden ham, og at han skal følge med nu.", correct: true, feedback: "Du har to gode muligheder her: forsøg at nedtrappe situationen ved at træde tilbage og tale roligt, eller gå ud og find zonelederen med det samme. Begge er acceptable reaktioner over for en aggressiv passager." },
+          { text: "Tag fysisk fat i ham og led ham ud. Situationen er akut og der er ikke tid til mere snak.", correct: false, feedback: "Fysisk kontakt med en aggressiv, beruset passager vil sandsynligvis gøre situationen meget værre og kan sætte jer begge i fare. Forsøg enten at nedtrappe eller rapporter til zonelederen." },
+          { text: "Forlad kahytten og find zonelederen med det samme for at rapportere situationen.", correct: true, feedback: "Du har to gode muligheder her: forsøg at nedtrappe situationen ved at træde tilbage og tale roligt, eller gå ud og find zonelederen med det samme. Begge er acceptable reaktioner over for en aggressiv passager." }
+        ]
       },
       {
-        text: "Leave the cabin, find your zone leader immediately, and report the situation",
-        correct: true,
-        feedback: "At this point you have two valid options — you can attempt to de-escalate by stepping back and speaking calmly, or you can leave immediately and report to your zone leader. Both are acceptable responses to an aggressive passenger."
+        scene: "Din zoneleder har tilkaldt hjælp og to ekstra besætningsmedlemmer er ankommet for at håndtere passageren. De siger, at de har styr på det, og at du kan fortsætte din afsøgning.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Bliv stående i døråbningen i tilfælde af, at de har brug for dig.", correct: false, feedback: "Hjælpen er ankommet og de har nu ansvaret. Du spilder tid du ikke har og der venter stadig kahytter og andre passagerer der måske har brug for dig." },
+          { text: "Fortsæt din afsøgning med det samme og rapporter tilbage til zonelederen, når du er færdig med dit område.", correct: true, feedback: "Situationen er i gode hænder og du har fået en klar besked om at fortsætte. Det mest nyttige du kan gøre nu er at gennemføre din afsøgning." }
+        ]
       }
     ]
   },
-  {
-    scene: "Your zone leader has called for assistance and two additional crew members have arrived to handle the passenger. They inform you that they can handle the situation, you can carry on your sweep.",
-    question: "What do you do?",
-    choices: [
+
+  sv: {
+    barTitle: "Berusad passagerare",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — utmärkt arbete." : s >= Math.ceil(t / 2) ? "Bra. Gå igenom de situationer du missade inför nästa övning." : "Gå igenom det här scenariot med din zonledare eller vid en möjlig genomgång.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "En berusad passagerare vägrar lämna sin hytt",
+    introDesc: "Du genomsöker hytter under en evakuering när du stöter på en passagerare som har druckit och vägrar följa med.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Stay in the doorway in case they need backup",
-        correct: false,
-        feedback: "The assistance has arrived and they are now responsible for the situation and the passenger. Staying uses time you do not have and you still have cabins to sweep and other passengers who may need help."
+        scene: "Du knackar och öppnar en hyttdörr. En man i 40-årsåldern sitter på sängen och är tydligt berusad. Han ser upp och säger: 'Det är lugnt, det är lugnt. Jag har åkt med det här fartyget hundra gånger.'",
+        question: "Vad är din första reaktion?",
+        choices: [
+          { text: "Säg till honom att du kommer tillbaka när du är klar med resten av genomgången.", correct: false, feedback: "Du kan inte garantera att du hinner komma tillbaka — och en berusad passagerare som lämnas ensam under en verklig evakuering är ett allvarligt problem." },
+          { text: "Tala lugnt, ta ögonkontakt och säg tydligt att det här är en verklig nödsituation och att han måste följa med dig nu.", correct: true, feedback: "Bra. Ett lugnt och direkt sätt att tala ger honom det tydligaste möjliga budskapet utan att det eskalerar till en konfrontation." },
+          { text: "Lämna hytten och fortsätt din genomgång — han är vuxen och kan bestämma själv.", correct: false, feedback: "Att lämna en berusad passagerare som vägrar evakuera är inte ett alternativ. Du måste ta tag i det — eller eskalera till zonledaren." }
+        ]
       },
       {
-        text: "Continue your sweep immediately and report back to your zone leader once you have finished your assigned area",
-        correct: true,
-        feedback: "The situation is in good hands — you have been given a clear instruction to carry on. The most useful thing you can do now is continue your sweep."
+        scene: "Han har rest sig upp och höjer rösten. Han pekar på dig och säger: 'Jag sa att jag inte går. Försvinn ut ur mitt rum.'",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Ta ett steg tillbaka, behåll lugnet och säg att du inte kan gå utan honom och att han måste följa med nu.", correct: true, feedback: "Du har två bra alternativ här: försök nedtrappa situationen genom att ta ett steg tillbaka och tala lugnt, eller gå ut och rapportera till zonledaren omedelbart. Båda är godkända reaktioner på en aggressiv passagerare." },
+          { text: "Ta fysiskt tag i honom och led ut honom. Situationen är akut och det finns inte mer tid för prat.", correct: false, feedback: "Fysisk kontakt med en aggressiv, berusad passagerare riskerar att eskalera situationen kraftigt och kan sätta er båda i fara. Försök antingen nedtrappa — eller rapportera till zonledaren." },
+          { text: "Lämna hytten, hitta din zonledare omedelbart och rapportera situationen.", correct: true, feedback: "Du har två bra alternativ här: försök nedtrappa situationen genom att ta ett steg tillbaka och tala lugnt, eller gå ut och rapportera till zonledaren omedelbart. Båda är godkända reaktioner på en aggressiv passagerare." }
+        ]
       },
+      {
+        scene: "Din zonledare har kallat på hjälp och två ytterligare besättningsmedlemmar har anlänt för att hantera passageraren. De säger att de har kontroll och att du kan fortsätta din genomgång.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Stanna i dörröppningen ifall de behöver förstärkning.", correct: false, feedback: "Hjälpen har anlänt och de ansvarar nu för situationen. Att stanna slösar tid du inte har — det finns fortfarande hytter att genomsöka och andra passagerare som kan behöva hjälp." },
+          { text: "Fortsätt din genomgång omedelbart och rapportera tillbaka till zonledaren när du är klar med ditt tilldelade område.", correct: true, feedback: "Situationen är i goda händer och du har fått en tydlig instruktion att fortsätta. Det mest användbara du kan göra nu är att slutföra din genomgång." }
+        ]
+      }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
   const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -496,16 +623,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -515,71 +644,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-
-  // ═══════════════════════════════════════════════════════════════
-  // INTRO SCREEN — fill in the four values below
-  // ═══════════════════════════════════════════════════════════════
-  const INTRO_TITLE     = "An Intoxicated passenger refuses to leave their cabin";
-  const INTRO_DESC      = "You are sweeping cabins during an evacuation when you encounter a passenger who has been drinking and refuses to leave.";
-  const INTRO_DURATION  = "~4 min"; // change if needed
-  // ═══════════════════════════════════════════════════════════════
-
-  document.getElementById('bar-title').textContent = document.querySelector('.top-bar .title').textContent;
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">${INTRO_TITLE}</div>
-      <div class="intro-desc">${INTRO_DESC}</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
-          <div class="meta-value">${steps.length}</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-value">3</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">${INTRO_DURATION}</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
-
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  // ═══════════════════════════════════════════════════════════════
-  // SUMMARY MESSAGES — edit the three result messages below
-  // ═══════════════════════════════════════════════════════════════
-  if (score === total) msg = 'All correct — excellent work.';
-  else if (score >= Math.ceil(total / 2)) msg = 'Good. Review the situations you missed before the next drill.';
-  else msg = 'Go through this scenario with your zone leader or at a possible briefing.';
-  // ═══════════════════════════════════════════════════════════════
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -587,19 +715,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
