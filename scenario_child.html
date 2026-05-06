@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,6 +37,7 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
   .top-bar .location {
@@ -43,6 +45,35 @@
     opacity: 0.75;
     margin-top: 3px;
   }
+
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
+  }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -291,15 +322,15 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
-    background: #f0f4ff;
-    border: 1px solid #c0cdf0;
+  .reminder-card {
+    background: #fffbf0;
+    border: 1px solid #f0d080;
     border-radius: 12px;
     padding: 0.875rem 1rem;
     margin-bottom: 1rem;
     font-size: 13px;
-    color: #3a4a7a;
-    line-height: 1.6;
+    color: #7a5c00;
+    line-height: 1.55;
   }
 
   .reminder-label {
@@ -307,13 +338,13 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #6070b0;
+    color: #b07800;
     margin-bottom: 4px;
   }
 
   .review-list {
     background: white;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid #e8e6e0;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -362,9 +393,11 @@
     color: #222;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    margin-bottom: 0.75rem;
   }
 
   .restart-btn:active { background: #eee; }
+
 
   .note-card {
     background: #fffbf0;
@@ -391,7 +424,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Child left alone in cabin</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher" id="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -400,90 +438,226 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "You are evacuating your assigned area. You open a cabin door, and find a child alone — around 8 years old — sitting on the bed, crying. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
-    question: "What is your first response?",
-    choices: [
+// ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
+
+const t = {
+  en: {
+    barTitle: "Child left alone in cabin",
+    barTitleResults: "Results",
+    langScreenBadge: "Emergency Training",
+    langScreenTitle: "Choose your language",
+    langScreenSub: "Vælg sprog  ·  Välj språk",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — excellent work." : s >= 2 ? "Good. Review the situations you missed before the next drill." : "Go through this scenario with your zone leader at the debrief.",
+    restart: "Restart scenario",
+    changeLang: "Change language",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "You find a child alone in a cabin during evacuation",
+    introDesc: "You are evacuating the area designated on your safety card. You find a child alone in a cabin who refuses to leave without their parents. What do you do?",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Tell the child firmly that they must come with you immediately — this is an emergency",
-        correct: false,
-        feedback: "Issuing a firm command to a frightened child almost always makes the situation worse. Try explaing the situation calmly first."
+        scene: "You are evacuating your assigned area. You open a cabin door, and find a child alone — around 8 years old — sitting on the bed, crying. The child looks at you and says: 'My mum and dad are upstairs, but I don't know where. I don't want to leave without them.'",
+        question: "What is your first response?",
+        choices: [
+          { text: "Tell the child firmly that they must come with you immediately — this is an emergency", correct: false, feedback: "Issuing a firm command to a frightened child almost always makes the situation worse. Try explaining the situation calmly first." },
+          { text: "Step into the cabin, crouch down to the child's level, speak calmly: 'I'm here to help you. What's your name?'", correct: true, feedback: "Getting down to the child's physical level and asking their name makes them feel safe. A calm voice also signals that you are in control of the situation, which helps reduce their fear." },
+          { text: "Leave the cabin and find the zone leader immediately to report an unaccompanied child", correct: false, feedback: "You should not leave an unaccompanied child alone in a cabin during an evacuation alarm. You are the responsible adult in this moment." }
+        ]
       },
       {
-        text: "Step into the cabin, crouch down to the child's level, speak calmly: 'I'm here to help you. What's your name?'",
-        correct: true,
-        feedback: "Getting down to the child's physical level and asking their name makes them feel safe. A calm voice also signals that you are in control of the situation, which helps reduce their fear."
+        scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep. He says he won't move until they come back.",
+        question: "How do you get Lucas moving?",
+        choices: [
+          { text: "Tell Lucas this is just a drill and there is no real danger, so he can come with you without worrying", correct: false, feedback: "Even if this is a drill, you should never tell passengers it is not a real emergency. Passengers must always respond as if the alarm is real." },
+          { text: "Tell Lucas that if he follows you to the muster station, the zone leader will help him find his parents", correct: true, feedback: "Yes, the zone leader can communicate with others to locate his parents and reunite them." },
+          { text: "Promise Lucas you will personally find his parents and bring them to him if he comes with you now", correct: false, feedback: "Making promises you cannot keep is a risk. You do not have a radio, you cannot leave Lucas, and you cannot guarantee you will find his parents. This should be handled by your zone leader." }
+        ]
       },
       {
-        text: "Leave the cabin and find the zone leader immediately to report an unaccompanied child",
-        correct: false,
-        feedback: "You should not leave an unaccompanied child alone in a cabin during an evacuation alarm. You are the responsible adult in this moment."
+        scene: "Lucas agrees to come with you. You take his hand and step into the corridor.",
+        question: "What do you do next?",
+        choices: [
+          { text: "Finish your full cabin sweep first, then take Lucas to the zone leader at the end", correct: false, feedback: "Completing the sweep before handing Lucas over delays critical information reaching the zone leader. His parents may be at the muster station already, worried about their child. The handover takes only a few minutes — do it first, then return to your sweep." },
+          { text: "Leave Lucas in the corridor and continue your sweep — he is old enough to find the muster station himself", correct: false, feedback: "An 8-year-old alone in a corridor during an active evacuation alarm is not safe. He does not know the ship, he is already frightened, and leaving him unaccompanied could make the situation significantly worse." },
+          { text: "Take Lucas directly to the zone leader at the muster station, hand him over, explain the situation, then return to continue your cabin sweep", correct: true, feedback: "The zone leader has the radio, the authority, and the overview to handle an unaccompanied child and locate his parents. The muster station is close, the handover is quick, and you can return to your sweep immediately." }
+        ]
       }
     ]
   },
-  {
-    scene: "The child tells you their name is Lucas. He says his parents went up to sit outside and told him to go to sleep. He says he won't move until they come back.",
-    question: "How do you get Lucas moving?",
-    choices: [
+
+  da: {
+    barTitle: "Barn alene i kahyt",
+    barTitleResults: "Resultater",
+    langScreenBadge: "Nødtræning",
+    langScreenTitle: "Vælg sprog",
+    langScreenSub: "Choose language  ·  Välj språk",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — alle nødsituationer er forskellige. Dette er én måde, denne situation kan udfolde sig på. Vær opmærksom og klar til at tilpasse dig det, der sker.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — fremragende arbejde." : s >= 2 ? "Godt. Gennemgå de situationer, du missede, inden næste øvelse." : "Gå dette scenarie igennem med din zoneleder ved debriefingen.",
+    restart: "Genstart scenarie",
+    changeLang: "Skift sprog",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "Du finder et barn alene i en kahyt under evakuering",
+    introDesc: "Du evakuerer det område, der er angivet på dit sikkerhedskort. Du finder et barn alene i en kahyt, som nægter at forlade den uden sine forældre. Hvad gør du?",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Tell Lucas this is just a drill and there is no real danger, so he can come with you without worrying",
-        correct: false,
-        feedback: "Even if this is a drill, you should never tell passengers it is not a real emergency. Passengers must always respond as if the alarm is real."
+        scene: "Du evakuerer dit område. Du åbner en kahytsdør og finder et barn alene — ca. 8 år — siddende på sengen og grædende. Barnet ser på dig og siger: 'Min mor og far er oppe på dækket, men jeg ved ikke, hvor. Jeg vil ikke gå uden dem.'",
+        question: "Hvad er din første reaktion?",
+        choices: [
+          { text: "Fortæl barnet bestemt, at det skal følge med dig med det samme — det er en nødsituation", correct: false, feedback: "At give et bange barn en bestemt ordre kan forværrer situationen. Forsøg i stedet at forklare situationen roligt." },
+          { text: "Træd ind i kahytten, sænk dig ned på barnets niveau og sig roligt: 'Jeg er her for at hjælpe dig. Hvad hedder du?'", correct: true, feedback: "At komme ned på barnets niveau og spørge om hans navn kan få ham til at føle sig mere tryg. En rolig stemme signalerer også, at du har kontrol over situationen, hvilket hjælper med at mindske barnets frygt." },
+          { text: "Forlad kahytten og find straks zonelederen for at rapportere om et barn uden ledsager", correct: false, feedback: "Du bør ikke lade et barn uden ledsager være alene i en kahyt under en evakueringsalarm. Du er den ansvarlige voksne i dette øjeblik." }
+        ]
       },
       {
-        text: "Tell Lucas that if he follows you to the muster station, the zone leader will help him find his parents",
-        correct: true,
-        feedback: "Yes, the zone leader can communicate with others to locate his parents and reunite them."
+        scene: "Barnet fortæller dig, at han hedder Lucas. Han siger, at hans forældre gik op for at sidde udenfor og lagde ha i seng. Han siger, han ikke vil gå sig, før de kommer tilbage.",
+        question: "Hvordan får du Lucas til at følge med?",
+        choices: [
+          { text: "Fortæl Lucas, at dette kun er en øvelse, og at der ikke er nogen reel fare, så han kan følge med uden at bekymre sig", correct: false, feedback: "Selvom dette er en øvelse, må du aldrig fortælle passagerer, at det ikke er en reel nødsituation. Passagerer skal altid reagere, som om alarmen er ægte." },
+          { text: "Fortæl Lucas, at hvis han følger med dig, vil zonelederen hjælpe ham med at finde sine forældre", correct: true, feedback: "Ja, zonelederen kan kommunikere med andre for at lokalisere hans forældre og genforene dem." },
+          { text: "Lov Lucas, at du personligt vil finde hans forældre, hvis han følger med nu", correct: false, feedback: "Det er risikabelt at give løfter, du ikke kan holde. Du har ingen radio, du kan ikke forlade Lucas, og du kan ikke garantere, at du finder hans forældre. Dette bør håndteres af zonelederen." }
+        ]
       },
       {
-        text: "Promise Lucas you will personally find his parents and bring them to him if he comes with you now",
-        correct: false,
-        feedback: "Making promises you cannot keep is a risk. You do not have a radio, you cannot leave Lucas, and you cannot guarantee you will find his parents. This should be handled by your zone leader."
+        scene: "Lucas vælger at følge med dig. Du tager hans hånd og træder ud i korridoren.",
+        question: "Hvad gør du nu?",
+        choices: [
+          { text: "Færdiggør din fulde afsøgning først, og tag derefter Lucas til zonelederen når du er færdig", correct: false, feedback: "At afslutte afsøgningen, før du afleverer Lucas, forsinker vigtige oplysninger til zonelederen. Hans forældre er måske allerede ved samlingsstationen og er bekymrede for deres barn. Afleveringen tager kun et par minutter, så gør det først, og vend tilbage til dit område." },
+          { text: "Lad Lucas vente i korridoren og fortsæt din afsøgning. Han er gammel nok til selv at finde samlingsstationen", correct: false, feedback: "En 8-årig alene i en korridor under en aktiv evakueringsalarm er ikke sikkert. Han kender ikke skibet, han er allerede bange, og det at lade ham være uden ledsager kan gøre situationen betydeligt værre." },
+          { text: "Tag Lucas direkte til zonelederen ved smalingsstationen, aflever ham, forklar situationen, og vend derefter tilbage for at fortsætte din afsøgning", correct: true, feedback: "Zonelederen har radioen, autoriteten og overblikket til at håndtere et barn uden ledsager og lokalisere hans forældre.  Afleveringen til samlingsstationen er hurtig, og du kan vende tilbage til din afsøgning med det samme." }
+        ]
       }
     ]
   },
-  {
-    scene: "Lucas agrees to come with you. You take his hand and step into the corridor.",
-    question: "What do you do next?",
-    choices: [
+
+  sv: {
+    barTitle: "Barn ensamt i hytt",
+    barTitleResults: "Resultat",
+    langScreenBadge: "Nödutbildning",
+    langScreenTitle: "Välj språk",
+    langScreenSub: "Choose language  ·  Vælg sprog",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — utmärkt arbete." : s >= 2 ? "Bra. Gå igenom de situationer du missade inför nästa övning." : "Gå igenom det här scenariot med din zonledare vid debriefingen.",
+    restart: "Starta om scenariot",
+    changeLang: "Byt språk",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "Du hittar ett barn ensamt i en hytt under evakuering",
+    introDesc: "Du evakuerar det område som anges på ditt säkerhetskort. Du hittar ett barn ensamt i en hytt som vägrar lämna utan sina föräldrar. Vad gör du?",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Finish your full cabin sweep first, then take Lucas to the zone leader at the end",
-        correct: false,
-        feedback: "Completing the sweep before handing Lucas over delays critical information reaching the zone leader. His parents may be at the muster station already, worried about their child. The handover takes only a few minutes — do it first, then return to your sweep."
+        scene: "Du evakuerar ditt tilldelade område. Du öppnar en hyttdörr och hittar ett barn ensamt — ungefär 8 år — sittande på sängen och gråtande. Barnet ser på dig och säger: 'Mamma och pappa är uppe på däck, men jag vet inte var. Jag vill inte gå utan dem.'",
+        question: "Vad är din första reaktion?",
+        choices: [
+          { text: "Säg bestämt till barnet att det måste följa med dig omedelbart — det är en nödsituation", correct: false, feedback: "Att ge ett rädd barn en bestämd order förvärrar nästan alltid situationen. Försök att förklara situationen lugnt i stället." },
+          { text: "Gå in i hytten, sätt dig ner på barnets nivå och säg lugnt: 'Jag är här för att hjälpa dig. Vad heter du?'", correct: true, feedback: "Att sätta sig ner på barnets nivå och fråga vad det heter gör att det känner sig tryggt. En lugn röst signalerar också att du har kontroll över situationen, vilket hjälper till att minska barnets rädsla." },
+          { text: "Lämna hytten och hitta zonledaren omedelbart för att rapportera om ett barn utan sällskap", correct: false, feedback: "Du bör inte lämna ett barn utan sällskap ensamt i en hytt under ett evakueringslarm. Du är den ansvariga vuxna i det här ögonblicket." }
+        ]
       },
       {
-        text: "Leave Lucas in the corridor and continue your sweep — he is old enough to find the muster station himself",
-        correct: false,
-        feedback: "An 8-year-old alone in a corridor during an active evacuation alarm is not safe. He does not know the ship, he is already frightened, and leaving him unaccompanied could make the situation significantly worse."
+        scene: "Barnet berättar att han heter Lucas. Han säger att hans föräldrar gick upp för att sitta ute och bad honom gå och lägga sig. Han säger att han inte rör sig förrän de kommer tillbaka.",
+        question: "Hur får du Lucas att följa med?",
+        choices: [
+          { text: "Berätta för Lucas att det här bara är en övning och att det inte finns någon verklig fara, så han kan följa med utan att oroa sig", correct: false, feedback: "Även om det är en övning ska du aldrig berätta för passagerare att det inte är en verklig nödsituation. Passagerare måste alltid reagera som om larmet är på riktigt." },
+          { text: "Berätta för Lucas att om han följer med dig till mönstringsplatsen kan zonledaren hjälpa honom att hitta sina föräldrar", correct: true, feedback: "Ja, zonledaren kan kommunicera med andra för att hitta hans föräldrar och återförena dem." },
+          { text: "Lova Lucas att du personligen hittar hans föräldrar och tar med dem till honom om han följer med nu", correct: false, feedback: "Det är riskabelt att ge löften du inte kan hålla. Du har ingen radio, du kan inte lämna Lucas och du kan inte garantera att du hittar hans föräldrar. Det här bör hanteras av din zonledare." }
+        ]
       },
       {
-        text: "Take Lucas directly to the zone leader at the muster station, hand him over, explain the situation, then return to continue your cabin sweep",
-        correct: true,
-        feedback: "The zone leader has the radio, the authority, and the overview to handle an unaccompanied child and locate his parents. The muster station is close, the handover is quick, and you can return to your sweep immediately."
+        scene: "Lucas går med på att följa med dig. Du tar hans hand och kliver ut i korridoren.",
+        question: "Vad gör du härnäst?",
+        choices: [
+          { text: "Slutför din fullständiga hyttgenomgång först och ta sedan Lucas till zonledaren i slutet", correct: false, feedback: "Att avsluta genomgången innan du överlämnar Lucas försenar viktig information till zonledaren. Hans föräldrar kanske redan är vid mönstringsplatsen och är oroliga för sitt barn. Överlämningen tar bara några minuter — gör det först och gå sedan tillbaka till din genomgång." },
+          { text: "Lämna Lucas i korridoren och fortsätt din genomgång — han är gammal nog att hitta mönstringsplatsen på egen hand", correct: false, feedback: "En 8-åring ensam i en korridor under ett aktivt evakueringslarm är inte säkert. Han känner inte till fartyget, han är redan rädd och att lämna honom utan sällskap kan göra situationen betydligt värre." },
+          { text: "Ta Lucas direkt till zonledaren vid mönstringsplatsen, överlämna honom, förklara situationen och återvänd sedan för att fortsätta din hyttgenomgång", correct: true, feedback: "Zonledaren har radion, befogenheten och överblicken för att hantera ett barn utan sällskap och hitta hans föräldrar. Mönstringsplatsen är nära, överlämningen går snabbt och du kan återvända till din genomgång omedelbart." }
+        ]
       }
     ]
   }
-];
+};
 
-let current = -1;
+// ─── STATE ────────────────────────────────────────────────────────────────────
+
+let lang = 'en';
+let current = -1; // -1 = intro, 0..n = steps, n+1 = summary
 let selected = null;
 let results = [];
+let shuffledSteps = [];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+
 function render() {
   const content = document.getElementById('content');
+  const switcher = document.getElementById('lang-switcher');
 
-  if (current === -1) { renderIntro(content); return; }
+  switcher.style.display = 'flex';
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
   const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -503,16 +677,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -520,62 +696,86 @@ function render() {
     <div id="feedback">${feedbackHTML}</div>`;
 }
 
+
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Child left alone in cabin';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">You find a child alone in a cabin during evacuation</div>
-      <div class="intro-desc">You are evacuating the area designated on you safety card. You find a child alone in a cabin who refuses to leave without their parents. What do you do?</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~4 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — excellent work.';
-  else if (score >= 2) msg = 'Good. Review the situations you missed before the next drill.';
-  else msg = 'Go through this scenario with your zone leader at the debrief.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+// ─── ACTIONS ──────────────────────────────────────────────────────────────────
+
+function selectLang(l) {
+  lang = l;
+  updateLangButtons();
+  renderIntro(document.getElementById('content'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchLang(l) {
+  lang = l;
+  // Re-render current screen in new language, keeping progress
+  // If mid-scenario and a choice is already selected, keep that state
+  render();
+  updateLangButtons();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
-  steps.forEach(step => {
-    step.choices.sort(() => Math.random() - 0.5);
-  });
+  current = 0;
+  selected = null;
+  results = [];
+  // Deep copy and shuffle choices for current language
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -583,26 +783,27 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
-  steps.forEach(step => {
-    step.choices.sort(() => Math.random() - 0.5);
-  });
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 render();
 </script>
 </body>
