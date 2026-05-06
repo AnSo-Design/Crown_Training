@@ -523,23 +523,23 @@ const t = {
     changeLang: "Skift sprog",
     introBadge: "Nødtræningsscenarie",
     introTitle: "Du finder et barn alene i en kahyt under evakuering",
-    introDesc: "Du evakuerer det område, der er angivet på dit sikkerhedskort. Du finder et barn alene i en kahyt, som nægter at forlade den uden sine forældre. Hvad gør du?",
+    introDesc: "Du evakuerer området angivet på dit sikkerhedskort. Du finder et barn alene i en kahyt, som nægter at gå uden sine forældre. Hvad gør du?",
     situations: "Situationer",
     duration: "~4 min",
     durationLabel: "Varighed",
     start: "Start scenarie",
     steps: [
       {
-        scene: "Du evakuerer dit område. Du åbner en kahytsdør og finder et barn alene — ca. 8 år — siddende på sengen og grædende. Barnet ser på dig og siger: 'Min mor og far er oppe på dækket, men jeg ved ikke, hvor. Jeg vil ikke gå uden dem.'",
+        scene: "Du evakuerer dit område. Du åbner en kahytsdør og finder et barn alene, ca. 8 år, der sidder og græder på sengen. Barnet ser dig og siger: 'Min mor og far er oppe på dækket, men jeg ved ikke, hvor. Jeg vil ikke gå uden dem.'",
         question: "Hvad er din første reaktion?",
         choices: [
           { text: "Fortæl barnet bestemt, at det skal følge med dig med det samme — det er en nødsituation", correct: false, feedback: "At give et bange barn en bestemt ordre kan forværrer situationen. Forsøg i stedet at forklare situationen roligt." },
-          { text: "Træd ind i kahytten, sænk dig ned på barnets niveau og sig roligt: 'Jeg er her for at hjælpe dig. Hvad hedder du?'", correct: true, feedback: "At komme ned på barnets niveau og spørge om hans navn kan få ham til at føle sig mere tryg. En rolig stemme signalerer også, at du har kontrol over situationen, hvilket hjælper med at mindske barnets frygt." },
+          { text: "Træd ind i kahytten, kom ned på barnets niveau og sig roligt: 'Jeg er her for at hjælpe dig. Hvad hedder du?'", correct: true, feedback: "At komme ned på barnets niveau og spørge om hans navn kan få ham til at føle sig mere tryg. En rolig stemme signalerer også, at du har kontrol over situationen, hvilket hjælper med at mindske barnets frygt." },
           { text: "Forlad kahytten og find straks zonelederen for at rapportere om et barn uden ledsager", correct: false, feedback: "Du bør ikke lade et barn uden ledsager være alene i en kahyt under en evakueringsalarm. Du er den ansvarlige voksne i dette øjeblik." }
         ]
       },
       {
-        scene: "Barnet fortæller dig, at han hedder Lucas. Han siger, at hans forældre gik op for at sidde udenfor og lagde ha i seng. Han siger, han ikke vil gå sig, før de kommer tilbage.",
+        scene: "Barnet fortæller dig, at han hedder Lucas. Han siger, at hans forældre gik op for at sidde udenfor og lagde ham i seng. Han siger, at han ikke vil gå, før de kommer tilbage.",
         question: "Hvordan får du Lucas til at følge med?",
         choices: [
           { text: "Fortæl Lucas, at dette kun er en øvelse, og at der ikke er nogen reel fare, så han kan følge med uden at bekymre sig", correct: false, feedback: "Selvom dette er en øvelse, må du aldrig fortælle passagerer, at det ikke er en reel nødsituation. Passagerer skal altid reagere, som om alarmen er ægte." },
@@ -552,8 +552,8 @@ const t = {
         question: "Hvad gør du nu?",
         choices: [
           { text: "Færdiggør din fulde afsøgning først, og tag derefter Lucas til zonelederen når du er færdig", correct: false, feedback: "At afslutte afsøgningen, før du afleverer Lucas, forsinker vigtige oplysninger til zonelederen. Hans forældre er måske allerede ved samlingsstationen og er bekymrede for deres barn. Afleveringen tager kun et par minutter, så gør det først, og vend tilbage til dit område." },
-          { text: "Lad Lucas vente i korridoren og fortsæt din afsøgning. Han er gammel nok til selv at finde samlingsstationen", correct: false, feedback: "En 8-årig alene i en korridor under en aktiv evakueringsalarm er ikke sikkert. Han kender ikke skibet, han er allerede bange, og det at lade ham være uden ledsager kan gøre situationen betydeligt værre." },
-          { text: "Tag Lucas direkte til zonelederen ved smalingsstationen, aflever ham, forklar situationen, og vend derefter tilbage for at fortsætte din afsøgning", correct: true, feedback: "Zonelederen har radioen, autoriteten og overblikket til at håndtere et barn uden ledsager og lokalisere hans forældre.  Afleveringen til samlingsstationen er hurtig, og du kan vende tilbage til din afsøgning med det samme." }
+          { text: "Lad Lucas vente i korridoren og fortsæt din afsøgning. Han er gammel nok til selv at vente alene", correct: false, feedback: "En 8-årig alene i en korridor under en aktiv evakueringsalarm er ikke sikkert. Han kender ikke skibet, han er allerede bange, og at lade ham være uden ledsager kan gøre situationen betydeligt værre." },
+          { text: "Tag Lucas direkte til zonelederen ved samlingsstationen, aflever ham, forklar situationen, og vend derefter tilbage for at fortsætte din afsøgning", correct: true, feedback: "Zonelederen har radioen, autoriteten og overblikket til at håndtere et barn uden ledsager og lokalisere hans forældre.  Afleveringen til samlingsstationen er hurtig, og du kan vende tilbage til din afsøgning med det samme." }
         ]
       }
     ]
