@@ -410,6 +410,13 @@
     line-height: 1.55;
   }
 
+ .lang-switcher-inline {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
   .note-label {
     font-size: 10px;
     font-weight: 700;
@@ -701,9 +708,9 @@ function renderIntro(content) {
   setProgress(0);
   const T = t[lang];
   document.getElementById('bar-title').textContent = T.barTitle;
+  document.getElementById('lang-switcher').style.display = 'none';
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">${T.introBadge}</div>
       <div class="intro-title">${T.introTitle}</div>
       <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
@@ -717,6 +724,11 @@ function renderIntro(content) {
         </div>
       </div>
       <button class="start-btn" onclick="startScenario()">${T.start}</button>
+      <div class="lang-switcher-inline">
+        <button class="lang-btn ${lang==='en'?'active':''}" onclick="selectLang('en')">EN</button>
+        <button class="lang-btn ${lang==='da'?'active':''}" onclick="selectLang('da')">DA</button>
+        <button class="lang-btn ${lang==='sv'?'active':''}" onclick="selectLang('sv')">SV</button>
+      </div>
     </div>`;
 }
 
