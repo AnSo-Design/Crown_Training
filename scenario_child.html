@@ -747,6 +747,23 @@ function renderSummary(content) {
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
     <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+
+ function renderSummary(content) {
+  setProgress(100);
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
+  const score = results.filter(r => r.correct).length;
+  const total = results.length;
+  const msg = T.scoreMsg(score, total);
+
+  // ... existing content.innerHTML = ... stays unchanged ...
+
+  // ── Send completion to Nordic Crew app ──
+  const scenarioId = window.location.pathname.split('/').pop().replace('.html', '');
+  setTimeout(() => {
+    window.location.href = `https://ansodesign.lovable.app/progress?completed=${scenarioId}&score=${score}&total=${total}`;
+  }, 4000);
+}
 }
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
