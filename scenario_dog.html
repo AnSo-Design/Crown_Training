@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Nordic Crown — Emergency Training: Dog in Life Boats</title>
+<title>Nordic Crown — Emergency Training</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
- .reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -378,7 +384,7 @@
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 14px;
-    color: #888;
+    color: #222;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Evacuating with a dog</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,84 +410,200 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "You are evacuating cabins and a woman approaches holding a dog. She insists on keeping the dog with her throughout the evacuation.",
-    question: "What do you do?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Evacuating with a dog",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — excellent work." : s >= 2 ? "Good. Review the situation you missed before your next drill." : "Worth going through this one again — passenger handling at the assembly station is one of the trickier parts of an evacuation.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "A passenger wants to bring a dog during evacuation",
+    introDesc: "The evacuation is underway and you are leading passengers to your assembly station. A passenger arrives with their dog and refuses to evacuate without it. Whether the dog can come depends on the situation.",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Tell her calmly that she can bring the dog with her to the assembly station, where they can help her further.",
-        correct: true,
-        feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. From the assembly station the zone leader can communicate with the bridge and make the final decision."
+        scene: "You are evacuating cabins and a woman approaches holding a dog. She insists on keeping the dog with her throughout the evacuation.",
+        question: "What do you do?",
+        choices: [
+          { text: "Tell her calmly that she can bring the dog with her to the assembly station, where they can help her further.", correct: true, feedback: "Good. Allowing her to keep the dog keeps things moving and avoids an unnecessary confrontation. From the assembly station the zone leader can communicate with the bridge and make the final decision." },
+          { text: "Tell her animals are never allowed during evacuation and demand that she leave the dog behind.", correct: false, feedback: "A dog can usually board if there is space in the life boats, which can be confirmed with your zone leader and later the bridge. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first." },
+          { text: "Ignore her request and continue helping others.", correct: false, feedback: "Skipping over her leaves a distressed, non-compliant passenger who may become an issue. You need to engage and resolve it." }
+        ]
       },
       {
-        text: "Tell her animals are never allowed during evacuation and demand that she leave the dog behind",
-        correct: false,
-        feedback: "A dog can usually board if there is space in the life boats, which can be confirmed with your zone leader and later the bridge. A flat refusal risks a prolonged confrontation that delays the evacuation. Assess the situation first."
+        scene: "You lead the woman to assembly station D, when a colleague tells you that you should not have allowed the dog and that you need to go back and leave it in the cabin.",
+        question: "What do you do?",
+        choices: [
+          { text: "Stand by your decision and continue leading the woman and others to the assembly station. Advise your colleague to speak to a zone leader.", correct: true, feedback: "A dog can almost always be evacuated with their owner and the final decision will be made at the assembly station by the zone leader and bridge. The colleague can raise the issue with a zone leader. Keep moving." },
+          { text: "Go back to the cabin and leave the dog behind to avoid conflict with your colleague.", correct: false, feedback: "The decision on whether the dog can board is not yours or theirs to make — it belongs to the zone leader and bridge. Continue to the assembly station." }
+        ]
       },
       {
-        text: "Ignore her request and continue helping others.",
-        correct: false,
-        feedback: "Skipping over her leaves a distressed, non-compliant passenger who may become an issue. You need to engage and resolve it."
+        scene: "You are at the life boat when a passenger refuses to board. They are visibly distressed and tell you they are terrified of dogs and will not get into the boat with one.",
+        question: "What do you do?",
+        choices: [
+          { text: "Tell the dog owner they will have to leave the dog behind so the other passenger can board.", correct: false, feedback: "The bridge has confirmed the dog can board — that decision is not yours to reverse. Your priority is to get both passengers onto the boat." },
+          { text: "Acknowledge the passenger's fear, reassure them, and ask the dog owner to keep the dog as far from them as possible inside the boat.", correct: true, feedback: "A calm, practical response. Acknowledging the fear and creating distance between the two passengers is a reasonable solution that keeps the evacuation moving." },
+          { text: "Escalate to your zone leader and ask them to place the frightened passenger in a different life boat.", correct: true, feedback: "If there is capacity in another boat and time allows, this is a reasonable choice." }
+        ]
       }
     ]
   },
- {
-    scene: "You lead the woman to assembly station D, when a collegue tells you that you should not have allowed the dog and that you need to go back and leave it in the cabin.",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Evakuering med en hund",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — godt gået." : s >= 2 ? "Godt. Kig den situation du missede igennem inden næste øvelse." : "Prøv dette scenarie igen — passagerhåndtering ved samlingsstationen er noget af det sværeste under en evakuering.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "En passager vil evakuere med sin hund",
+    introDesc: "Evakueringen er i gang og du leder passagerer mod samlingsstationen. En passager dukker op med sin hund og vil ikke evakuere uden den. Om hunden kan komme med afhænger af situationen.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Stand by your decision and continue leading the woman and others to the assembly station. Advice your collegue to talk to a zone leader",
-        correct: true,
-        feedback: "A dog can almost always be evacuated with their owner and the final decision will be made at the assembly station by the zone leader and bridge. The collegue can bring up the issue later with a zone leader. Keep moving."
+        scene: "Du evakuerer kahytter, da en kvinde kommer mod dig med en hund. Hun er fast besluttet på at hunden skal evakueres sammen med hende.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Fortæl hende roligt, at hun godt kan tage hunden med til samlingsstationen, hvor de kan tage stilling til det.", correct: true, feedback: "Godt. Det holder tingene i gang og undgår en unødig konfrontation. Fra samlingsstationen kan zonelederen kontakte broen og træffe den endelige beslutning." },
+          { text: "Fortæl hende, at dyr aldrig kan medbringes i hverken redningsbåde eller flåder, og at hun skal efterlade hunden.", correct: false, feedback: "En hund kan som regel komme med, hvis der er plads i redningsbådene, hvilket afklares med zonelederen og broen. Et blankt afslag risikerer at trække tingene i langdrag og forsinke evakueringen. Vurder situationen først." },
+          { text: "Ignorer hendes spørgsmål og fortsæt med at hjælpe andre.", correct: false, feedback: "Hvis du lader hende stå, har du en oprevet passager der ikke følger med, hvilket kan blive et større problem. Du er nødt til at tage hånd om det med det samme." }
+        ]
       },
       {
-        text: "Go back to the cabin and leave the dog behind to avoid conflict with your colleague",
-        correct: false,
-        feedback: "The decision on whether the dog can board is not yours or theirs to make — it belongs to the zone leader and bridge. Continue to the assembly station."
+        scene: "Du leder kvinden mod samlingsstation D, da en kollega siger, at du ikke burde have tilladt hunden, og at du skal gå tilbage og efterlade den i kahytten.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Stå fast ved din beslutning og fortsæt med at lede kvinden og de andre til samlingsstationen. Sig til kollegaen, at han kan tage det op med zonelederen.", correct: true, feedback: "En hund kan næsten altid evakueres med sin ejer og den endelige beslutning træffes af zonelederen og broen ved samlingsstationen. Kollegaen kan sagtens rejse spørgsmålet der. Hold fokus og bliv i bevægelse." },
+          { text: "Gå tilbage til kahytten og efterlad hunden for at undgå konflikt med kollegaen.", correct: false, feedback: "Det er hverken dig eller kollegaens endelige beslutning at tage — det er zonelederens og broens. Fortsæt til samlingsstationen." }
+        ]
+      },
+      {
+        scene: "Du er ved redningsbåden, da en passager nægter at gå om bord. Hun er tydeligt oprevet og fortæller, at hun er bange for hunde og ikke vil ind i båden med en.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Sig til hundeejeren, at hunden må efterlades, så den anden passager kan gå om bord.", correct: false, feedback: "Broen har godkendt, at hunden kan komme med og den beslutning er ikke din at omgøre. Din opgave er at få begge passagerer om bord." },
+          { text: "Tag passagerens frygt alvorligt, berolig hende, og bed hundeejeren holde hunden så langt væk fra hende som muligt inde i båden.", correct: true, feedback: "En rolig og praktisk løsning. Når du anerkender frygten og skaber fysisk afstand mellem de to passagerer, holder du evakueringen i gang uden at eskalere konflikten." },
+          { text: "Kontakt zonelederen og bed om, at den bange passager placeres i en anden redningsbåd.", correct: true, feedback: "Hvis der er plads i en anden båd og tid til det, er dette et fornuftigt valg." }
+        ]
       }
     ]
   },
- {
-    scene: "You are at the life boat when a passenger refuses to board. They are visibly distressed and tell you they are terrified of dogs and will not get into the boat with one.",
-    question: "What do you do?",
-    choices: [
+
+  sv: {
+    barTitle: "Evakuering med en hund",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — utmärkt arbete." : s >= 2 ? "Bra. Gå igenom situationen du missade inför nästa övning." : "Gå igenom det här scenariot igen — passagerhantering vid samlingsplatsen är en av de svårare delarna av en evakuering.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "En passagerare vill ta med sin hund under evakueringen",
+    introDesc: "Evakueringen pågår och du leder passagerare till din samlingsplats. En passagerare dyker upp med sin hund och vägrar evakuera utan den. Om hunden får följa med beror på situationen.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Tell the dog owner they will have to leave the dog behind so the other passenger can board",
-        correct: false,
-        feedback: "The bridge has confirmed the dog can board — that decision is not yours to reverse. Your priority is to get both passengers onto the boat and escalate if needed."
+        scene: "Du evakuerar hytter när en kvinna kommer gående med en hund. Hon insisterar på att ha hunden med sig under hela evakueringen.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Säg lugnt till henne att hon kan ta med hunden till samlingsplatsen, där de kan ta ställning till det vidare.", correct: true, feedback: "Bra. Det håller evakueringen igång och undviker en onödig konfrontation. Från samlingsplatsen kan zonledaren kontakta bryggan och fatta det slutliga beslutet." },
+          { text: "Säg till henne att djur aldrig är tillåtna under evakuering och kräv att hon lämnar hunden.", correct: false, feedback: "En hund kan vanligtvis följa med om det finns plats i livbåtarna — det bekräftas med zonledaren och bryggan. Ett blankt avslag riskerar en utdragen konfrontation som försenar evakueringen. Bedöm situationen först." },
+          { text: "Ignorera hennes begäran och fortsätt hjälpa andra.", correct: false, feedback: "Om du lämnar henne utan svar har du en upprörd passagerare som inte följer med — det blir bara ett större problem. Du måste ta tag i det." }
+        ]
       },
       {
-        text: "Acknowledge the passenger's fear, reassure them, and ask the dog owner to keep the dog as far from them as possible inside the boat",
-        correct: true,
-        feedback: "A calm, practical response. Acknowledging the fear and creating a large physical distance between the two passengers is a reasonable solution that keeps the evacuation moving."
+        scene: "Du leder kvinnan mot samlingsplats D när en kollega säger att du inte borde ha tillåtit hunden och att du måste gå tillbaka och lämna den i hytten.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Håll fast vid ditt beslut och fortsätt leda kvinnan och de andra till samlingsplatsen. Be kollegan ta upp frågan med zonledaren.", correct: true, feedback: "En hund kan nästan alltid evakueras med sin ägare — det slutliga beslutet fattas av zonledaren och bryggan vid samlingsplatsen. Kollegan kan ta upp frågan där. Håll fokus och fortsätt röra dig framåt." },
+          { text: "Gå tillbaka till hytten och lämna hunden för att undvika konflikt med kollegan.", correct: false, feedback: "Det är varken ditt eller kollegans beslut att fatta — det tillhör zonledaren och bryggan. Fortsätt till samlingsplatsen." }
+        ]
       },
       {
-        text: "Escalate to your zone leader and ask them to place the frightened passenger in a different life boat",
-        correct: true,
-        feedback: "If there is capacity in another boat and time allows, this is a reasonable escalation."
+        scene: "Du är vid livbåten när en passagerare vägrar gå ombord. Hen är tydligt upprörd och berättar att hen är rädd för hundar och inte vill kliva in i båten med en.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Säg till hundägaren att hunden måste lämnas kvar så att den andra passageraren kan gå ombord.", correct: false, feedback: "Bryggan har bekräftat att hunden får följa med — det beslutet är inte ditt att ändra. Din uppgift är att få båda passagerarna ombord." },
+          { text: "Ta passagerarens rädsla på allvar, lugna hen och be hundägaren hålla hunden så långt bort från hen som möjligt inne i båten.", correct: true, feedback: "En lugn och praktisk lösning. Att bekräfta rädslan och skapa fysiskt avstånd mellan de två passagerarna är ett rimligt sätt att hålla evakueringen igång." },
+          { text: "Kontakta zonledaren och be att den rädda passageraren placeras i en annan livbåt.", correct: true, feedback: "Om det finns kapacitet i en annan båt och tid tillåter är detta en rimlig eskalering." }
+        ]
       }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
-  const letters = ['A','B','C'];
+  const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -496,16 +623,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -515,57 +644,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Evacuating with a dog';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">A passenger wants to bring a dog during evacuation</div>
-      <div class="intro-desc">The evacuation is underway and you are leading passengers to your muster station. A passenger arrives with their dog and refuses to evacuate without it. Whether the dog can come depends on the situation.</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
         <div class="meta-item">
-          <div class="meta-value">~4 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — excellent work.';
-  else if (score >= 2) msg = 'Good. Review the situation you missed before your next drill.';
-  else msg = 'Worth going through this one again — passenger handling at muster is one of the trickier parts of an evacuation.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-  <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -573,19 +715,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
