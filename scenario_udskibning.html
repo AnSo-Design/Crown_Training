@@ -22,6 +22,7 @@
     background: #c0392b;
     padding: 1rem 1.25rem 0.85rem;
     color: white;
+    position: relative;
   }
 
   .top-bar .label {
@@ -36,13 +37,37 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.2;
+    padding-right: 80px;
   }
 
-  .top-bar .location {
-    font-size: 12px;
-    opacity: 0.75;
-    margin-top: 3px;
+  .lang-switcher {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    display: flex;
+    gap: 5px;
   }
+
+  .lang-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .lang-btn.active {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+  }
+
+  .lang-btn:active { background: rgba(255,255,255,0.5); }
 
   .progress-wrap {
     background: rgba(255,255,255,0.3);
@@ -123,6 +148,7 @@
     align-items: flex-start;
     gap: 10px;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.1s, border-color 0.1s;
   }
 
   .choice-btn:active { background: #f4f4f2; }
@@ -199,26 +225,6 @@
   }
 
   .next-btn:active { background: #a0291e; }
-
-  .note-card {
-    background: #fffbf0;
-    border: 1px solid #f0d080;
-    border-radius: 12px;
-    padding: 0.875rem 1rem;
-    margin-top: 1rem;
-    font-size: 13px;
-    color: #7a5c00;
-    line-height: 1.55;
-  }
-
-  .note-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #b07800;
-    margin-bottom: 4px;
-  }
 
   .intro-wrap { text-align: center; padding-top: 0.5rem; }
 
@@ -310,7 +316,7 @@
     margin-bottom: 1.5rem;
   }
 
-.reminder-card {
+  .reminder-card {
     background: #f0f4ff;
     border: 1px solid #c0cdf0;
     border-radius: 12px;
@@ -329,7 +335,7 @@
     color: #6070b0;
     margin-bottom: 4px;
   }
- 
+
   .review-list {
     background: white;
     border-radius: 14px;
@@ -390,7 +396,12 @@
 
 <div class="top-bar">
   <div class="label">Nordic Crown — Emergency Training</div>
-  <div class="title" id="bar-title">Passenger management at rescue station</div>
+  <div class="title" id="bar-title"></div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" onclick="switchLang('da')">DA</button>
+    <button class="lang-btn" onclick="switchLang('sv')">SV</button>
+  </div>
   <div class="progress-wrap">
     <div class="progress-fill" id="progress"></div>
   </div>
@@ -399,89 +410,202 @@
 <div class="container" id="content"></div>
 
 <script>
-const steps = [
-  {
-    scene: "You are at the rescue station overseeing the loading of a life raft. The raft has reached its stated capacity of 25 people. A man arrives at the edge, visibly distressed, and tells you his wife is already inside. He is asking to board.",
-    question: "What do you do?",
-    choices: [
+const t = {
+  en: {
+    barTitle: "Passenger management at rescue station",
+    barTitleResults: "Results",
+    situationOf: (n, total) => `Situation ${n} of ${total}`,
+    situationLabel: "Situation",
+    correct: "Good choice",
+    wrong: "Not quite",
+    next: "Next situation →",
+    seeResults: "See my results →",
+    scenarioComplete: "Scenario complete",
+    keepInMindLabel: "Keep in mind",
+    keepInMind: "Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "correct response",
+    reviewRecommended: "review recommended",
+    scoreMsg: (s, t) => s === t ? "All correct — if this happens on board, you are ready." : s >= 2 ? "Good. Review the situation you missed before your next drill." : "Worth revisiting before your next drill — talk through these situations with your zone leader.",
+    restart: "Restart scenario",
+    introBadge: "Emergency Training Scenario",
+    introTitle: "Managing passengers at the rescue station and MES chute",
+    introDesc: "Loading a life raft and managing the MES chute requires quick decisions under pressure. Work through each situation and choose the right response.",
+    situations: "Situations",
+    duration: "~4 min",
+    durationLabel: "Duration",
+    start: "Start scenario",
+    steps: [
       {
-        text: "Tell him the raft is at capacity and direct him to another raft",
-        correct: false,
-        feedback: "The stated capacity is a guideline, not a hard limit — life rafts are built to support considerably more than their listed number. Separating a family in an emergency is unnecessary and causes significant distress. Where there is room, allow it."
+        scene: "You are at the rescue station overseeing the loading of a life raft. The raft has reached its stated capacity of 25 people. A man arrives at the edge, visibly distressed, and tells you his wife is already inside. He is asking to board.",
+        question: "What do you do?",
+        choices: [
+          { text: "Tell him the raft is at capacity and direct him to another raft.", correct: false, feedback: "The stated capacity is a guideline, not a hard limit — life rafts are built to support considerably more than their listed number. Separating a family in an emergency is unnecessary and causes significant distress. Where there is room, allow it." },
+          { text: "Allow him to board and reunite with his wife.", correct: true, feedback: "Life rafts are built with a significant safety margin above their stated capacity. A few extra passengers, particularly family members, is not a safety risk. Keeping families together also reduces panic and makes the situation easier to manage for everyone on board." },
+          { text: "Call your zone leader and wait for approval before making a decision.", correct: false, feedback: "There is no time to wait for approval in this situation and the decision is straightforward — there is room and he should board. Use your judgement and keep loading moving." }
+        ]
       },
       {
-        text: "Allow him to board and reunite with his wife",
-        correct: true,
-        feedback: "Life rafts are built with a significant safety margin above their stated capacity. A few extra passengers, particularly family members, is not a safety risk. Keeping families together also reduces panic and makes the situation easier to manage for everyone on board."
+        scene: "Passengers are descending the MES chute on deck 7. You notice a woman at the top of the chute wearing stiletto heels. She is about to step on.",
+        question: "What do you do?",
+        choices: [
+          { text: "Let her descend — stopping her will slow the flow of passengers behind her.", correct: false, feedback: "Stiletto heels can puncture the MES chute, which could put everyone descending after her at risk. A few seconds to remove the shoes is worth it." },
+          { text: "Ask her to remove her shoes before descending, then let her proceed.", correct: true, feedback: "Sharp heels can damage the MES chute. Asking her to remove them takes only a few seconds and protects the equipment for everyone who follows. This is standard procedure at MES stations." },
+          { text: "Ask her to step aside and wait until all other passengers have descended, then deal with her shoes.", correct: false, feedback: "Asking her to step aside creates unnecessary delay and confusion. A quick instruction to remove her shoes before she boards is all that is needed — it does not require her to leave the queue." }
+        ]
       },
       {
-        text: "Call your zone leader and wait for approval before making a decision",
-        correct: false,
-        feedback: "There is no time to wait for approval in this situation and the decision is straightforward — there is room and he should board. Use your judgement and keep loading moving."
+        scene: "A man reaches the top of the MES chute and stops. He is gripping the sides and not moving. He looks down and says: 'I can't do it. I'm afraid of heights.' The queue behind him is growing.",
+        question: "What do you do?",
+        choices: [
+          { text: "Tell him firmly that he has no choice and that he needs to go now.", correct: false, feedback: "A direct command is unlikely to work on someone frozen with fear and may make him more resistant. You need to bring his anxiety down briefly before he will be able to move." },
+          { text: "Calmly ask him to step to the side, let the passengers behind him continue, and take a moment to reassure him that the chute is safe and that crew will be waiting for him at the bottom.", correct: true, feedback: "Moving him aside keeps the flow of passengers going while giving him the time and reassurance he needs. Letting him know the chute is safe and that someone will be waiting at the bottom addresses his specific fear directly. Once he is calm and ready, guide him back to the chute." },
+          { text: "Ask another passenger to go down with him at the same time for moral support.", correct: true, feedback: "Having someone alongside can make a significant difference for a distressed passenger. It keeps them moving, provides reassurance, and means they are not navigating the evacuation alone." }
+        ]
       }
     ]
   },
-  {
-    scene: "Passengers are descending the MES chute on deck 7. You notice a woman at the top of the chute wearing stiletto heels. She is about to step on.",
-    question: "What do you do?",
-    choices: [
+
+  da: {
+    barTitle: "Passagerhåndtering ved udskibningsstation",
+    barTitleResults: "Resultater",
+    situationOf: (n, total) => `Situation ${n} af ${total}`,
+    situationLabel: "Situation",
+    correct: "Godt valg",
+    wrong: "Ikke helt",
+    next: "Næste situation →",
+    seeResults: "Se mine resultater →",
+    scenarioComplete: "Scenarie afsluttet",
+    keepInMindLabel: "Husk",
+    keepInMind: "Husk — ingen nødsituationer er ens. Det her er én måde det kan gå. Vær opmærksom og klar til at handle anderledes, hvis situationen kræver det.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rigtigt svar",
+    reviewRecommended: "gennemgang anbefales",
+    scoreMsg: (s, t) => s === t ? "Alle rigtige — hvis det sker om bord, er du klar." : s >= 2 ? "Godt. Kig den situation du missede igennem inden næste øvelse." : "Tag det her med inden næste øvelse — gennemgå situationerne med din zoneleder.",
+    restart: "Genstart scenarie",
+    introBadge: "Nødtræningsscenarie",
+    introTitle: "Håndtering af passagerer ved udskibningsstationen og MES-slisken",
+    introDesc: "Ombordstigning på redningsflåder og styring af MES-slisken kræver hurtige beslutninger under pres. Gå situationerne igennem og vælg den rigtige reaktion.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Varighed",
+    start: "Start scenarie",
+    steps: [
       {
-        text: "Let her descend — stopping her will slow the flow of passengers behind her",
-        correct: false,
-        feedback: "Stiletto heels can puncture the MES chute, which could put everyone descending after her at risk. A few seconds to remove the shoes is worth it."
+        scene: "Du er ved redningsstationen og overvåger ombordstigning på en redningsflåde. Flåden har nået sin angivne kapacitet på 25 personer. En mand ankommer til kanten, tydeligt oprevet, og fortæller dig, at hans kone allerede er om bord. Han beder om at komme med.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Sig til ham, at flåden er fuld, og send ham videre til en anden flåde.", correct: false, feedback: "Den angivne kapacitet er en vejledning, ikke en absolut grænse — redningsflåder er bygget til at bære betydeligt flere end det angivne antal. Det er unødvendigt at adskille en familie under en nødsituation og skaber stor uro. Er der plads, lad ham komme med." },
+          { text: "Lad ham gå om bord og blive genforenet med sin kone.", correct: true, feedback: "Redningsflåder er bygget med en betydelig sikkerhedsgrænse over den angivne kapacitet. Et par ekstra passagerer — især familiemedlemmer — er ikke en sikkerhedsrisiko. At holde familier samlet reducerer også panik og gør situationen lettere at håndtere for alle om bord." },
+          { text: "Ring til din zonelederen og vent på godkendelse, inden du træffer en beslutning.", correct: false, feedback: "Der er ikke tid til at vente på godkendelse her, og beslutningen er ligetil — der er plads, og han skal om bord. Brug din sunde fornuft og hold ombordstigningen i gang." }
+        ]
       },
       {
-        text: "Ask her to remove her shoes before descending, then let her proceed",
-        correct: true,
-        feedback: "Sharp heels can damage the MES chute. Asking her to remove them takes only a few seconds and protects the equipment for everyone who follows. This is standard procedure at MES stations."
+        scene: "Passagerer er ved at rutsje ned ad MES-slisken på dæk 7. Du bemærker en kvinde øverst på slisken med stilethæle. Hun er ved at træde på.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Lad hende rutsje ned — at stoppe hende vil bremse strømmen af passagerer bagved.", correct: false, feedback: "Stilethæle kan punktere MES-slisken og sætte alle, der kommer efter hende, i fare. Det er et par sekunders arbejde at fjerne skoene — det er det værd." },
+          { text: "Bed hende tage skoene af, inden hun rutsjer ned, og lad hende derefter fortsætte.", correct: true, feedback: "Skarpe hæle kan beskadige MES-slisken. Det tager kun et par sekunder og beskytter udstyret for alle der følger efter. Det er standardprocedure ved MES-stationer." }
+        ]
       },
       {
-        text: "Ask her to step aside and wait until all other passengers have descended, then deal with her shoes",
-        correct: false,
-        feedback: "Asking her to step aside creates unnecessary delay and confusion. A quick instruction to remove her shoes before she boards is all that is needed — it does not require her to leave the queue."
+        scene: "En mand når toppen af MES-slisken og stopper. Han holder fast i siderne og bevæger sig ikke. Han kigger ned og siger: 'Jeg kan ikke. Jeg er bange for højder.' Køen bag ham vokser.",
+        question: "Hvad gør du?",
+        choices: [
+          { text: "Sig bestemt til ham, at han ikke har noget valg, og at han skal af sted nu.", correct: false, feedback: "En direkte ordre virker sandsynligvis ikke på nogen, der er frosset fast af frygt — og kan gøre ham mere modvillig. Du er nødt til at få hans angst til at falde lidt, inden han kan bevæge sig." },
+          { text: "Bed ham roligt træde til siden, lad passagererne bagved fortsætte, og tag et øjeblik til at berolige ham om, at slisken er sikker, og at et besætningsmedlem tager imod ham på bunden.", correct: true, feedback: "At flytte ham til siden holder passagerstrømmen i gang, mens han får den tid og ro han har brug for. Når han er rolig og klar, guides han tilbage til slisken." },
+          { text: "Bed en anden passager rutsje ned sammen med ham for at støtte ham.", correct: true, feedback: "At have nogen ved siden af kan gøre en stor forskel for en oprevet passager. Det holder dem i bevægelse, giver tryghed og betyder, at de ikke skal navigere evakueringen alene." }
+        ]
       }
     ]
   },
-  {
-    scene: "A man reaches the top of the MES chute and stops. He is gripping the sides and not moving. He looks down and says: \u201CI can\u2019t do it. I\u2019m afraid of heights.\u201D The queue behind him is growing.",
-    question: "What do you do?",
-    choices: [
+
+  sv: {
+    barTitle: "Passagerhantering vid räddningsstation",
+    barTitleResults: "Resultat",
+    situationOf: (n, total) => `Situation ${n} av ${total}`,
+    situationLabel: "Situation",
+    correct: "Bra val",
+    wrong: "Inte riktigt",
+    next: "Nästa situation →",
+    seeResults: "Se mina resultat →",
+    scenarioComplete: "Scenario avslutat",
+    keepInMindLabel: "Tänk på",
+    keepInMind: "Kom ihåg — varje nödsituation är unik. Det här är ett sätt den här situationen kan utvecklas. Var uppmärksam och beredd att anpassa dig till det som händer.",
+    situationN: (n) => `Situation ${n}`,
+    correctResponse: "rätt svar",
+    reviewRecommended: "repetition rekommenderas",
+    scoreMsg: (s, t) => s === t ? "Allt rätt — om det händer ombord är du redo." : s >= 2 ? "Bra. Gå igenom situationen du missade inför nästa övning." : "Värt att gå igenom innan nästa övning — diskutera situationerna med din zonledare.",
+    restart: "Starta om scenariot",
+    introBadge: "Nödutbildningsscenario",
+    introTitle: "Hantering av passagerare vid räddningsstationen och MES-ränteln",
+    introDesc: "Ombordstigning på livflottar och hantering av MES-ränteln kräver snabba beslut under press. Gå igenom varje situation och välj rätt reaktion.",
+    situations: "Situationer",
+    duration: "~4 min",
+    durationLabel: "Längd",
+    start: "Starta scenario",
+    steps: [
       {
-        text: "Tell him firmly that he has no choice and that he needs to go now",
-        correct: false,
-        feedback: "A direct command is unlikely to work on someone frozen with fear and may make him more resistant. You need to bring his anxiety down briefly before he will be able to move."
+        scene: "Du är vid räddningsstationen och övervakar ombordstigningen på en livflotte. Flotten har nått sin angivna kapacitet på 25 personer. En man anländer till kanten, tydligt upprörd, och berättar att hans fru redan är ombord. Han ber om att få gå ombord.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Säg till honom att flotten är full och hänvisa honom till en annan flotte.", correct: false, feedback: "Den angivna kapaciteten är en riktlinje, inte en absolut gräns — livflottar är byggda för att bära betydligt fler än det angivna antalet. Det är onödigt att separera en familj i en nödsituation och orsakar stor oro. Finns det plats, låt honom gå ombord." },
+          { text: "Låt honom gå ombord och återförenas med sin fru.", correct: true, feedback: "Livflottar är byggda med en betydande säkerhetsmarginal över den angivna kapaciteten. Några extra passagerare — särskilt familjemedlemmar — är ingen säkerhetsrisk. Att hålla familjer tillsammans minskar också panik och gör situationen lättare att hantera för alla ombord." },
+          { text: "Ring din zonledare och vänta på godkännande innan du fattar ett beslut.", correct: false, feedback: "Det finns ingen tid att vänta på godkännande här och beslutet är enkelt — det finns plats och han bör gå ombord. Använd ditt omdöme och håll ombordstigningen igång." }
+        ]
       },
       {
-        text: "Calmly ask him to step to the side, let the passengers behind him continue, and take a moment to reassure him that the chute is safe and that crew will be waiting for him at the bottom",
-        correct: true,
-        feedback: "Moving him aside keeps the flow of passengers going while giving him the time and reassurance he needs. Letting him know the chute is safe and that someone will be waiting at the bottom addresses his specific fear directly. Once he is calm and ready, guide him back to the chute."
+        scene: "Passagerare åker ner för MES-ränteln på däck 7. Du märker att en kvinna längst upp i ränteln bär stilettklackar. Hon är på väg att kliva på.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Låt henne åka ner — att stoppa henne kommer att bromsa flödet av passagerare bakom henne.", correct: false, feedback: "Stilettklackar kan punktera MES-ränteln vilket kan sätta alla som åker efter henne i fara. Det tar bara några sekunder att ta av skorna — det är värt det." },
+          { text: "Be henne ta av skorna innan hon åker ner och låt henne sedan fortsätta.", correct: true, feedback: "Skarpa klackar kan skada MES-ränteln. Det tar bara några sekunder och skyddar utrustningen för alla som följer efter. Detta är standardprocedur vid MES-stationer." },
+          { text: "Be henne stega åt sidan och vänta tills alla andra passagerare åkt ner, och ta sedan itu med skorna.", correct: false, feedback: "Att be henne stega åt sidan skapar onödig fördröjning och förvirring. En snabb instruktion om att ta av skorna innan hon går ombord är allt som behövs — det kräver inte att hon lämnar kön." }
+        ]
       },
       {
-        text: "Ask another passenger to go down with him at the same time for moral support",
-        correct: true,
-        feedback: "Having someone alongside can make a significant difference for a distressed passenger. It keeps them moving, provides reassurance, and means they are not navigating the evacuation alone."
+        scene: "En man når toppen av MES-ränteln och stannar. Han håller i sidorna och rör sig inte. Han tittar ner och säger: 'Jag klarar det inte. Jag är rädd för höjder.' Kön bakom honom växer.",
+        question: "Vad gör du?",
+        choices: [
+          { text: "Säg bestämt till honom att han inte har något val och att han måste åka nu.", correct: false, feedback: "En direkt order fungerar troligtvis inte på någon som är frusen av rädsla och kan göra honom mer motvillig. Du behöver få ner hans ångest något innan han kan röra sig." },
+          { text: "Be honom lugnt stega åt sidan, låt passagerarna bakom honom fortsätta och ta ett ögonblick för att lugna honom om att ränteln är säker och att besättning väntar på honom i botten.", correct: true, feedback: "Att flytta honom åt sidan håller passagerarflödet igång medan han får den tid och trygghet han behöver. Att berätta att ränteln är säker och att någon väntar på honom i botten adresserar direkt vad han är rädd för. När han är lugn och redo, vägleder du honom tillbaka till ränteln." },
+          { text: "Be en annan passagerare åka ner tillsammans med honom som stöd.", correct: true, feedback: "Att ha någon bredvid kan göra stor skillnad för en upprörd passagerare. Det håller dem i rörelse, ger trygghet och innebär att de inte navigerar evakueringen ensamma." }
+        ]
       }
     ]
   }
-];
+};
 
+let lang = 'en';
 let current = -1;
 let selected = null;
 let results = [];
+let shuffledSteps = [];
 
 function setProgress(pct) {
   document.getElementById('progress').style.width = pct + '%';
 }
 
+function updateLangButtons() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+}
+
 function render() {
   const content = document.getElementById('content');
-  if (current === -1) { renderIntro(content); return; }
+  updateLangButtons();
+
+  if (current <= -1) { renderIntro(content); return; }
+
+  const steps = shuffledSteps;
   if (current >= steps.length) { renderSummary(content); return; }
 
   setProgress((current / steps.length) * 100);
   const step = steps[current];
   const answered = selected !== null;
-  const letters = ['A','B','C'];
+  const letters = ['A','B','C','D'];
+  const T = t[lang];
 
   const choicesHTML = step.choices.map((c, i) => {
     let cls = 'choice-btn';
@@ -501,16 +625,18 @@ function render() {
     const isLast = current === steps.length - 1;
     feedbackHTML = `
       <div class="feedback-card ${c.correct ? 'correct' : 'wrong'}">
-        <div class="feedback-title">${c.correct ? 'Good choice' : 'Not quite'}</div>
+        <div class="feedback-title">${c.correct ? T.correct : T.wrong}</div>
         <div class="feedback-text">${c.feedback}</div>
       </div>
-      <button class="next-btn" onclick="next()">${isLast ? 'See my results →' : 'Next situation →'}</button>`;
+      <button class="next-btn" onclick="next()">${isLast ? T.seeResults : T.next}</button>`;
   }
 
+  document.getElementById('bar-title').textContent = T.barTitle;
+
   content.innerHTML = `
-    <div class="step-label">Situation ${current + 1} of ${steps.length}</div>
+    <div class="step-label">${T.situationOf(current + 1, steps.length)}</div>
     <div class="scene-card">
-      <div class="scene-label">Situation</div>
+      <div class="scene-label">${T.situationLabel}</div>
       <div class="scene-text">${step.scene}</div>
     </div>
     <div class="question-label">${step.question}</div>
@@ -520,58 +646,70 @@ function render() {
 
 function renderIntro(content) {
   setProgress(0);
-  document.getElementById('bar-title').textContent = 'Passenger management at rescue station';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitle;
   content.innerHTML = `
     <div class="intro-wrap">
-      <div class="intro-badge">Emergency Training Scenario</div>
-      <div class="intro-title">Managing passengers at the rescue station and MES chute</div>
-      <div class="intro-desc">Loading a life raft and managing the MES chute requires quick decisions under pressure. Work through each situation and choose the right response.</div>
+      <div class="intro-badge">${T.introBadge}</div>
+      <div class="intro-title">${T.introTitle}</div>
+      <div class="intro-desc">${T.introDesc}</div>
       <div class="intro-meta">
         <div class="meta-item">
           <div class="meta-value">3</div>
-          <div class="meta-label">Situations</div>
+          <div class="meta-label">${T.situations}</div>
         </div>
-
         <div class="meta-item">
-          <div class="meta-value">~4 min</div>
-          <div class="meta-label">Duration</div>
+          <div class="meta-value">${T.duration}</div>
+          <div class="meta-label">${T.durationLabel}</div>
         </div>
       </div>
-      <button class="start-btn" onclick="startScenario()">Start scenario</button>
+      <button class="start-btn" onclick="startScenario()">${T.start}</button>
     </div>`;
 }
 
 function renderSummary(content) {
   setProgress(100);
-  document.getElementById('bar-title').textContent = 'Results';
+  const T = t[lang];
+  document.getElementById('bar-title').textContent = T.barTitleResults;
   const score = results.filter(r => r.correct).length;
   const total = results.length;
-  let msg = '';
-  if (score === total) msg = 'All correct — if this happens on board, you are ready.';
-  else if (score >= 2) msg = 'Good. Review the situation you missed before your next drill.';
-  else msg = 'Worth revisiting before your next drill — talk through these situations with your zone leader.';
+  const msg = T.scoreMsg(score, total);
 
   const reviewItems = results.map((r, i) => `
     <div class="review-item">
       <div class="review-dot ${r.correct ? 'correct' : 'wrong'}"></div>
-      <div class="review-text">Situation ${i + 1} — ${r.correct ? 'correct response' : 'review recommended'}</div>
+      <div class="review-text">${T.situationN(i + 1)} — ${r.correct ? T.correctResponse : T.reviewRecommended}</div>
     </div>`).join('');
 
   content.innerHTML = `
     <div class="summary-wrap">
-      <div class="step-label">Scenario complete</div>
+      <div class="step-label">${T.scenarioComplete}</div>
       <div class="summary-score">${score}/${total}</div>
       <div class="summary-sub">${msg}</div>
     </div>
     <div class="reminder-card">
-    <div class="reminder-label">Keep in mind</div>Remember — every emergency is different. This is one way this situation might unfold, but stay alert and be prepared to adapt to whatever comes your way.</div>
+      <div class="reminder-label">${T.keepInMindLabel}</div>
+      ${T.keepInMind}
+    </div>
     <div class="review-list">${reviewItems}</div>
     <div class="divider"></div>
-    <button class="restart-btn" onclick="restart()">Restart scenario</button>`;
+    <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
+}
+
+function switchLang(l) {
+  lang = l;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startScenario() {
-  current = 0; selected = null; results = [];
+  current = 0;
+  selected = null;
+  results = [];
+  shuffledSteps = t[lang].steps.map(step => ({
+    ...step,
+    choices: [...step.choices].sort(() => Math.random() - 0.5)
+  }));
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -579,19 +717,22 @@ function startScenario() {
 function choose(i) {
   if (selected !== null) return;
   selected = i;
-  results.push({ correct: steps[current].choices[i].correct });
+  results.push({ correct: shuffledSteps[current].choices[i].correct });
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function next() {
-  current++; selected = null;
+  current++;
+  selected = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function restart() {
-  current = -1; selected = null; results = [];
+  current = -1;
+  selected = null;
+  results = [];
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
