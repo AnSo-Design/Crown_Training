@@ -410,12 +410,36 @@
     line-height: 1.55;
   }
 
- .lang-switcher-inline {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 1rem;
-}
+  .lang-switcher-inline {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.25rem;
+  }
+
+  .lang-switcher-inline .lang-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .lang-switcher-inline .lang-btn.active {
+    background: #f0f0ee;
+    border-color: #888;
+    color: #222;
+  }
+
+  .lang-switcher-inline .lang-btn:active {
+    background: #e8e8e6;
+  }
 
   .note-label {
     font-size: 10px;
@@ -760,22 +784,11 @@ function renderSummary(content) {
     <div class="divider"></div>
     <button class="restart-btn" onclick="restart()">${T.restart}</button>`;
 
- function renderSummary(content) {
-  setProgress(100);
-  const T = t[lang];
-  document.getElementById('bar-title').textContent = T.barTitleResults;
-  const score = results.filter(r => r.correct).length;
-  const total = results.length;
-  const msg = T.scoreMsg(score, total);
-
-  // ... existing content.innerHTML = ... stays unchanged ...
-
   // ── Send completion to Nordic Crew app ──
   const scenarioId = window.location.pathname.split('/').pop().replace('.html', '');
   setTimeout(() => {
     window.location.href = `https://ansodesign.lovable.app/progress?completed=${scenarioId}&score=${score}&total=${total}`;
   }, 4000);
-}
 }
 
 // ─── ACTIONS ──────────────────────────────────────────────────────────────────
@@ -800,6 +813,7 @@ function startScenario() {
   current = 0;
   selected = null;
   results = [];
+  document.getElementById('lang-switcher').style.display = 'flex';
   // Deep copy and shuffle choices for current language
   shuffledSteps = t[lang].steps.map(step => ({
     ...step,
